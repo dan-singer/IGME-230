@@ -1,0 +1,19 @@
+th, td{
+    border: 2px solid black;
+}
+table{
+    border: 2px solid orange;
+}
+td{
+    padding: 4px;
+}
+th{
+    background-color: black;
+    color: white;
+}
+
+tr:nth-child(2){
+    background-color:lightgrey;
+    font-weight: bold;
+}
+

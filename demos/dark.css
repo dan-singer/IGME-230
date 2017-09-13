@@ -1,0 +1,70 @@
+/*Most local and specific style wins. inline trumps embedded trumps external*/
+
+/*border, margin, and padding not inherited*/
+
+*{
+    font-family: courier;
+}
+
+header{
+    height: 185px;
+    background-color: darkblue;
+    color: white;
+}
+header h1{
+    font-family: sans-serif, Tahoma, Verdana;
+    font-size: 40px;
+    padding: 10px;
+}
+
+header span{
+    font-family: sans-serif, Tahoma, Verdana;
+    font-size: 20px;
+    margin-left: 70px;
+    font-style: italic;
+    color: #ddd; 
+}
+
+section{
+    border: 1px solid red;  
+    margin-bottom: 5px;
+    padding: 5px 50px 20px 15px;
+}
+
+#winner{
+    border: 5px solid red;
+}
+
+.runnerup{
+    color: yellow;
+}
+
+h2, h3{
+    font-family: sans-serif, verdana;
+    color: green;
+}
+
+a:hover{
+    color:red;
+    font-weight: bold;
+}
+
+/*Just the link I think, seems to override hover.*/
+a:link{
+    color: black;
+}
+
+a:visited{
+    color: green;
+}
+
+/*Mouse Down*/
+a:active{
+    font-weight: normal;
+    color: grey;
+}
+
+p::first-letter{
+    font-size: 200%;
+    color: purple;
+}

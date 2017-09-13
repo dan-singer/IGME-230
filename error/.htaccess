@@ -1,0 +1,4 @@
+#Redirect to the error html file 
+ErrorDocument 404 /djs5435/230/error/error.html
+
+DirectoryIndex noterror.html

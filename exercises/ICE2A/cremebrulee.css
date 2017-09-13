@@ -1,0 +1,22 @@
+body{
+    font-family: 'Helvetica Neue', Helvetica, Arial,sans-serif;
+    line-height: 1.4;
+    padding-left: 20px; 
+}
+
+a{
+    text-decoration: none;
+}
+
+h1,h2{
+    font-family: 'Linux Libertine', Georgia, Times, 'Times New Roman', serif;
+    line-height: 1.3;
+    margin-bottom: 0.25em;
+    padding: 0;
+    border-bottom: 1px solid #a2a9b1;
+    font-weight: normal;
+}
+
+h1{
+    font-size: xx-large;    
+}

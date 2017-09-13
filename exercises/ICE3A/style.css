@@ -1,8 +1,13 @@
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 th, td{
     border: 2px solid black;
 }
 table{
     border: 2px solid orange;
+    width: 100%;
 }
 td{
     padding: 4px;
@@ -15,5 +20,49 @@ th{
 tr:nth-child(2){
     background-color:lightgrey;
     font-weight: bold;
+}
+
+header{
+    position: absolute;
+    width: 90%;
+    background-color: lightgrey;
+    text-align: center;
+    border: 2px solid black;
+    height: 8%;
+    left:5%;
+}
+
+#left{
+    position: absolute;
+    left:5%;
+    top:15%;
+    width:43%;
+}
+
+#right{
+    position: absolute;
+    right:5%;
+    top:15%;
+    width:43%;
+}
+
+footer{
+    position: absolute;
+    width:90%;
+    left:5%;
+    height:4%;
+    bottom:4%;
+    background-color:lightgrey;
+    border: 2px solid black;
+    text-align: center;
+}
+footer p{
+    position: relative;
+    top: 20%;
+    font-size: 18px;
+}
+
+p{
+    margin-top:0px;
 }
 

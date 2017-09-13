@@ -66,3 +66,26 @@ p{
     margin-top:0px;
 }
 
+
+.centered{
+    margin: 0px;
+    margin-top:10px;
+}
+
+.centered img{
+    display: block;
+    margin: auto;
+}
+
+
+figcaption{
+    width: 512px;
+    margin: auto;
+    text-align: center;
+    background-color: lightgray;
+    border: 2px solid black;
+}
+
+img{
+    border: 2px solid black;
+}

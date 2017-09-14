@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>CSS Animations</title>
+
+	<style type="text/css">
+		#circle{
+			width:100px;
+			height:100px; 
+			background-color:magenta;
+			border-radius:50px;
+			transition: 2s;
+			}
+		#circle:hover{
+			background-color:cyan; 
+			width:500px;
+		}
+	
+		#thing{
+			transition-timing-function: ease-in-out;			
+			transition: opacity 2s; /*Whenever opacity changes, do it over 2 seconds*/
+		}
+		
+		#thing:hover{
+			opacity:0;
+		}
+		
+		.menu{
+			background-color:yellow; 
+			width:200px; 
+			height:1em;
+			overflow:hidden;
+			transition:.5s;
+		}
+		.menu:hover{
+			height:6em;
+		}
+	</style>
+</head>
+<body>
+
+<div id="circle"></div>
+<img id="thing" src="Dragomir.png" width="200" height="307" alt="Blargh." />
+
+<div class="menu">
+	Choose one:
+	<ul>
+		<li>First</li>
+		<li>Second</li>
+		<li>Third</li>
+	</ul>
+</div>
+</body>
+</html>

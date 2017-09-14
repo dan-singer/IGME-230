@@ -12,7 +12,9 @@ header{
     color: white;
 }
 header h1{
-    font-family: sans-serif, Tahoma, Verdana;
+    /*font-family: sans-serif, Tahoma, Verdana;*/
+    font-family: 'Princess Sofia', cursive;
+    
     font-size: 40px;
     padding: 10px;
 }

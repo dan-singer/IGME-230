@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>List 4</title>
+
+        <style>
+            #navlist{
+                padding: 3px 0;
+                margin-left: 0;
+                border-bottom: 1px solid #778;
+                font: bold 12px Verdana, sans-serif;
+            }
+            #navlist li{
+                list-style: none;
+                margin: 0;
+                display: inline;
+            }
+            #navlist li a{
+                padding: 3px .5em;
+                margin-left: 3px;
+                border: 1px solid #778;
+                border-bottom: none;
+                background: #DDE;
+                text-decoration: none;
+            }
+
+            #navlist li a:link{
+                color: #448;
+            }
+
+            #navlist li a:visited{
+                color: #667;
+            }
+
+            #navlist li a:hover{
+                color: #000;
+                background: #AAE;
+                border-color: #227;
+            }
+
+            #navlist li#active a{
+                background: white;
+                border-bottom: 1px solid white;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Tabbed Navbar</h1>
+        <div id="navcontainer">
+            <ul id="navlist">
+                <li id="active"><a href="#">Home</a></li>
+                <li><a href="#">Story</a></li>
+                <li><a href="#">Gameplay</a></li>
+                <li><a href="#">Graphics</a></li>
+                <li><a href="#">Architecture</a></li>
+            </ul>
+        </div>
+    </body>
+</html>

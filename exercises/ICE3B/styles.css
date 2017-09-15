@@ -5,16 +5,34 @@
 
 /* Navigation related styles */
 /* Add your styles here */
+
+/*TODO reset these - just go with the tutorial here http://css.maxdesign.com.au/floatutorial/tutorial0613.htm*/
 #navlist{
-	padding: 0; 
+	list-style-type: none;
+	padding: 0;
 	margin: 0;
+	float: left;
+	width: 100%;
+	background-color: #036;
 }
 
 #navlist li{
-	display: inline-block;
-	padding: 5px 10px 5px 10px;
+	display: inline;
+	
+}
+#navlist li a{
+	float: left;
+	width: 10em;
+	color: white;
+	padding: 0.2em 1em;
+	text-decoration: none;
+	border-right: 1px solid white;
 }
 
+#navlist li a:hover{
+	background-color: #369;
+	color: white;
+}
 
 /* Don't change the styles below (unless you really want to) */
 /* Layout and content related styles */

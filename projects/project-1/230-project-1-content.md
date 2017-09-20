@@ -17,7 +17,7 @@ You captain a space ship in the year 3000 and are tasked with finding and destro
 
 **Theme:** Good vs. Evil
 
-**Mood:** Dark
+**Mood:** Dark, Isolated
 
 **Player Motivation:** The player will save the space system if they can defeat each of these GL5 creatures.
 
@@ -30,21 +30,21 @@ You captain a space ship in the year 3000 and are tasked with finding and destro
 ## Gameplay
 ![Gameplay](mockup-2.png "Gameplay")
 ### Mechanics
-- The player can fight each of the GL5s in any order, with the exception of the final one, which must be fought after beating the others. 
-- They can pilot their ship and fly in any direction. The camera will follow the ship everywhere, so it will be one large "room" rather 
+- The player can fight each of the GL5s in any order, with the exception of the final one, which must be fought after defeating the others. 
+- The player can pilot their ship and fly in any direction. The camera will follow the ship everywhere, so it will be one large "room" rather 
 than several smaller ones.
-- There will be 4 GL5s to destroy, and each will give the player an additional unit of health.
+- There will be 4 GL5s to destroy, and each will raise the players's maximum health by one unit.
 - Health and score pickups will be availble throughout the world.
 
 ### Controls
 - Keyboard controls only.
 - Navigate ship: Arrows or WASD
-- Fire projectile: Space
+- Fire projectile: Space or Left Click
 - Pause: Escape or Backspace
 
 ### Player Learning
-Before the game starts, a message will be displayed stating: "Arrows/WASD = Move. Space = Fire." No other control instructions will be given, as 
-the core mechanics are pretty simple.
+Before the game starts, a message will be displayed stating, "Arrows/WASD = Move. Space = Fire." No other control instructions will be given, as 
+the core mechanics are fairly simple, and the lack of instructions will generate a sense of isolation.
 
 ## Other
 - Music will be original and created with FL Studio.

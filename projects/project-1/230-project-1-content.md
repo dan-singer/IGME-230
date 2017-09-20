@@ -1,4 +1,7 @@
 # Space Voyager
+
+![Space Voyager](mockup-1.png "Space Voyager")
+
 ## High Concept
 It's a 2D space shooter, but open-world instead of linear.
 
@@ -25,6 +28,7 @@ You captain a space ship in the year 3000 and are tasked with finding and destro
     - Electronic sound effects for firing, thrust, enemy fire (3 variations), enemy death, player death, ui select
 
 ## Gameplay
+![Gameplay](mockup-2.png "Gameplay")
 ### Mechanics
 - The player can fight each of the GL5s in any order, with the exception of the final one, which must be fought after beating the others. 
 - They can pilot their ship and fly in any direction. The camera will follow the ship everywhere, so it will be one large "room" rather 
@@ -41,9 +45,6 @@ than several smaller ones.
 ### Player Learning
 Before the game starts, a message will be displayed stating: "Arrows/WASD = Move. Space = Fire." No other control instructions will be given, as 
 the core mechanics are pretty simple.
-
-## Screenshots
-To insert here.
 
 ## Other
 - Music will be original and created with FL Studio.

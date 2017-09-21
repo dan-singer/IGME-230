@@ -1,0 +1,81 @@
+/*Do star and not body because body won't inherit*/
+*{
+    margin: 0;
+    padding: 0;  
+}
+
+p{
+    margin-bottom: 1em;
+    text-indent:1em;
+    font-family: verdana;
+    font-size:90%;
+}
+
+body{
+    margin-left: 15%;
+    margin-right: 15%;
+    background-color:rgb(16%,20%,26%);
+}
+
+#content{
+    background-color:white;
+    border-left:  2px solid purple;
+    border-right: 2px solid purple;    
+    padding: 0.5em 1em 0.5em 1em;
+}
+
+h1{
+    font-family: courier,monospace;
+    font-variant: small-caps;
+    border-bottom: 1px solid gray;
+}
+img[alt="watson small"]{
+    display: none;
+}
+
+#movie p{
+    text-indent: 0;
+}
+
+@media screen and (max-width: 480px){ /*So these are points, which relate to screen size not pixels*/
+    body{
+        margin-left: 3%;
+        margin-right: 3%;
+    }
+    img[alt="watson small"]{
+        display:inline;
+    }
+    img[alt="watson medium"]{
+        display: none;
+    }
+    h1{
+        font-size: 115%;
+    }
+    #movie{
+        border: none;
+        background-color: #ccc;
+    }
+    #movie h2{
+        display:none;
+    }
+    #movie h3:first-of-type::before{
+        content: "Sherlock Holmes the Movie (2009)";
+        display: block;
+        font-size:22px;
+        text-decoration: underline;
+        margin-bottom: 8px;
+    }
+}
+
+@media screen and (min-width:481px) and (max-width: 800px){
+    body{
+        margin-left:7%;
+        margin-right: 7%;
+    }
+    img[alt="watson large"]{
+        display: none;
+    }
+    img[alt="watson medium"]{
+        display: inline;
+    }
+}

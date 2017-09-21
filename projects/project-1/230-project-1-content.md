@@ -13,7 +13,9 @@ Web for desktop
 
 ## Story
 **Narrative/Premise:** Evil aliens known as GL5s have been ravaging the space system.
-You captain a space ship in the year 3000 and are tasked with finding and destroying each of these GL5 creatures.  
+You captain a space ship in the year 3000 and are tasked with finding and destroying each of these GL5 creatures. 
+There are four of them to discover in this isolated world, and the fifth, more dangerous one will appear after
+defeating the four main GL5 creatures.
 
 **Theme:** Good vs. Evil
 

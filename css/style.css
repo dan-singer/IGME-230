@@ -82,9 +82,10 @@ li{
 }
 
 #exercises{
+    height: auto;
     clear:both;
     margin: auto;
-    padding-top: 4px;
+    padding: 4px 0px;
     margin-bottom: 10px;
 }
 

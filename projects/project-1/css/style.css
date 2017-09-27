@@ -1,3 +1,5 @@
+/*Mobile First*/
+
 *{
     margin: 0px;
     padding: 0px;
@@ -8,7 +10,7 @@ html{
 }
 
 body{
-    margin: 0 5%;
+    margin: 0px;
     background-color: black;    
     min-height: 100%;
     background: linear-gradient(to right, black, #131212);
@@ -24,31 +26,41 @@ header h1{
     font-family: "Saira", sans-serif;
     background-color: black;
     color: white;
-    display: inline-block;
+    text-align: center;    
 }
 
-nav{
-    display: inline-block;  
+header h1#active-page{
+    display:none;
+}
+
+/*Adjust navbar to fit in mobile screen*/
+nav ul{
+    list-style-type: none;
+    display: table;
+    margin: auto;
 }
 nav ul li{
+    padding: 6px;
     display: inline-block;
     padding: 10px;
     border-right: 1px solid black;
+    
 }
 
-nav a:link{
+
+nav a:link, header a:link{
     text-decoration: none;
     color: grey;
 }
-nav a:visited{
+nav a:visited, header a:visited{
     color: grey;    
 }
 
-nav a:hover{
+nav a:hover, header a:hover{
     color: white;
 }
 
-nav a:active{
+nav a:active, header a:active{
     color: grey;
 }
 
@@ -87,51 +99,52 @@ nav a:active{
     font-size: 24px;
 }
 
-
 .desk-img{
-    display: block;
+    display: none;
 }
 .tab-img{
     display: none;
 }
 .mob-img{
-    display: none;
+    display: block;
 }
+
 
 /*Tablets*/
-@media screen and (max-width: 800px){
-    body{
-        margin: 0px;
-    }
-    .desk-img{
+@media screen and (min-width: 480px){
+    .mob-img{
         display: none;
     }
     .tab-img{
         display: block;
     }
-    
 }
-/*Phones*/
-@media screen and (max-width: 480px) {
+/*Desktop*/
+@media screen and (min-width: 800px) {
+
+    body{
+        margin: 0 5%;
+    }
     .tab-img{
         display: none;
     }
-    .mob-img{
+    .desk-img{
         display: block;
     }
 
-    /*Adjust navbar to fit in mobile screen*/
+    /*Inline-block for desktop, otherwise block so we can center*/
     nav{
-        width: 100%;
+        display: inline-block;  
     }
     nav ul{
-        display: table;
-        margin: auto;
-    }
-    nav ul li{
-        padding: 6px;
+        display: inline-block;
+        margin: 0px;
     }
     nav ul li a{
-        font-size: 14px;        
+        font-size: inherit;
+    }
+
+    header h1#active-page, header h1{
+        display: inline-block;
     }
 }

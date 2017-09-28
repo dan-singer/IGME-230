@@ -28,11 +28,21 @@ header h1{
     text-align: center;    
 }
 
+h2, h3{
+    font-family: "Saira", sans-serif;
+}
+
 li{
     margin-left: 15px;
 }
 ul ul li{
     margin-left: 30px;
+}
+section ul{
+    margin-bottom: 10px;
+}
+section h2{
+    margin-bottom: 10px;
 }
 
 #high-concept h2{
@@ -42,10 +52,10 @@ img{
     margin: auto;
 }
 section{
-    background: linear-gradient(to right, black, grey);
+    background: linear-gradient(to right, #222121, grey);
     margin: 10% auto;
     padding: 10px;
-    width: 90%;
+    width: 75%;
 
 }
 
@@ -63,25 +73,36 @@ nav ul li{
     padding: 6px;
     display: inline-block;
     padding: 10px;
-    border-right: 1px solid black;
     
 }
 
 
-nav a:link, header a:link{
+a:link{
     text-decoration: none;
     color: grey;
 }
-nav a:visited, header a:visited{
+a:visited{
     color: grey;    
 }
 
-nav a:hover, header a:hover{
+a:hover{
     color: white;
 }
 
-nav a:active, header a:active{
+a:active{
     color: grey;
+}
+
+
+
+.desk-img{
+    display: none;
+}
+.tab-img{
+    display: none;
+}
+.mob-img{
+    display: block;
 }
 
 #active-page{
@@ -119,16 +140,28 @@ nav a:active, header a:active{
     font-size: 24px;
 }
 
-.desk-img{
-    display: none;
-}
-.tab-img{
-    display: none;
-}
-.mob-img{
-    display: block;
+
+#wrapper{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
+#wrapper section{
+    flex: 1 auto;
+}
+
+#game{
+    text-align: center;
+    height: 80vh;
+}
+
+#game h1{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform:translate(-50%, -50%);
+}
 
 /*Tablets*/
 @media screen and (min-width: 480px){
@@ -140,6 +173,13 @@ nav a:active, header a:active{
     }
     img{
         display: block;
+    }
+
+    p, li{
+        font-size: 18px;
+    }
+    section{
+        margin: 5% auto;
     }
 }
 /*Desktop*/
@@ -153,6 +193,9 @@ nav a:active, header a:active{
     }
     .desk-img{
         display: block;
+    }
+    section{
+        margin: 3% auto;
     }
 
     /*Inline-block for desktop, otherwise block so we can center*/
@@ -170,4 +213,16 @@ nav a:active, header a:active{
     header h1#active-page, header h1{
         display: inline-block;
     }
+
+    #wrapper section{
+        flex: 1 40%;
+    }
+    #wrapper section#high-concept{
+        flex: 0 auto;
+    }
+    #wrapper section#gameplay{
+        flex-basis: 100%;
+    }
+
+
 }

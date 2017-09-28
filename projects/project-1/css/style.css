@@ -1,5 +1,4 @@
 /*Mobile First*/
-
 *{
     margin: 0px;
     padding: 0px;
@@ -27,6 +26,27 @@ header h1{
     background-color: black;
     color: white;
     text-align: center;    
+}
+
+li{
+    margin-left: 15px;
+}
+ul ul li{
+    margin-left: 30px;
+}
+
+#high-concept h2{
+    text-align: center;
+}
+img{
+    margin: auto;
+}
+section{
+    background: linear-gradient(to right, black, grey);
+    margin: 10% auto;
+    padding: 10px;
+    width: 90%;
+
 }
 
 header h1#active-page{
@@ -116,6 +136,9 @@ nav a:active, header a:active{
         display: none;
     }
     .tab-img{
+        display: block;
+    }
+    img{
         display: block;
     }
 }

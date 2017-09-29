@@ -26,6 +26,7 @@ header h2{
     background-color: black;
     color: white;
     text-align: center;    
+    font-size: 32px;
 }
 
 h2, h3{
@@ -222,7 +223,8 @@ a:active{
         font-size: inherit;
     }
 
-    header h1#active-page, header h1{
+    /*We need to explicitly show the header h2 on the all pages next to the nav items*/
+    header h2#active-page, header h2{
         display: inline-block;
         padding: 0 10px;
     }

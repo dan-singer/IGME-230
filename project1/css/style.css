@@ -82,9 +82,10 @@ nav ul li:first-of-type{
 a:link{
     text-decoration: none;
     color: grey;
+    text-shadow: 1px 1px black;
 }
 a:visited{
-    color: grey;    
+    color: #747272;    
 }
 
 a:hover{
@@ -92,7 +93,7 @@ a:hover{
 }
 
 a:active{
-    color: grey;
+    color: #747272;
 }
 
 .nested-list-holder{

@@ -21,7 +21,7 @@ header{
     border-bottom: 5px solid grey;
 }
 
-header h1{
+header h2{
     font-family: "Saira", sans-serif;
     background-color: black;
     color: white;
@@ -59,7 +59,7 @@ section{
     width: 85%;
 }
 
-header h1#active-page{
+header h2#active-page{
     display:none;
 }
 
@@ -94,7 +94,9 @@ a:active{
     color: grey;
 }
 
-
+.nested-list-holder{
+    list-style-type: none;
+}
 
 .desk-img{
     display: none;

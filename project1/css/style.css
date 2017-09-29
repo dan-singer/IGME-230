@@ -50,6 +50,7 @@ section h2{
 }
 img{
     margin: auto;
+    display: block;
 }
 section{
     background: linear-gradient(to right, #222121, grey);
@@ -171,9 +172,6 @@ a:active{
         display: none;
     }
     .tab-img{
-        display: block;
-    }
-    img{
         display: block;
     }
 

@@ -55,8 +55,7 @@ section{
     background: linear-gradient(to right, #222121, grey);
     margin: 10% auto;
     padding: 10px;
-    width: 75%;
-
+    width: 85%;
 }
 
 header h1#active-page{
@@ -70,10 +69,11 @@ nav ul{
     margin: auto;
 }
 nav ul li{
-    padding: 6px;
     display: inline-block;
-    padding: 10px;
-    
+    padding: 5px;
+}
+nav ul li:first-of-type{
+    margin-left: 0;
 }
 
 
@@ -114,6 +114,7 @@ a:active{
     width: 100%;
     background: linear-gradient(to left, black, #131212);    
     border-bottom: 5px solid grey;
+    padding: 0px; 
 }
 
 #splash h1{
@@ -130,7 +131,8 @@ a:active{
 }
 
 #splash div{
-    width: 100%;
+    width: 90%;
+    margin: auto;
 }
 
 #splash div p{
@@ -148,7 +150,7 @@ a:active{
 }
 
 #wrapper section{
-    flex: 1 auto;
+    flex: 0 auto;
 }
 
 #game{
@@ -160,7 +162,7 @@ a:active{
     position: absolute;
     top: 50%;
     left: 50%;
-    transform:translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 /*Tablets*/
@@ -175,11 +177,19 @@ a:active{
         display: block;
     }
 
-    p, li{
-        font-size: 18px;
-    }
     section{
         margin: 5% auto;
+    }
+
+    /*Increase font size for tablets and desktop*/
+    p, li{
+        font-size: 20px;
+    }
+    nav ul li{
+        font-size: 22px;
+    }
+    #splash div p{
+        font-size: 28px;
     }
 }
 /*Desktop*/
@@ -198,7 +208,9 @@ a:active{
         margin: 3% auto;
     }
 
-    /*Inline-block for desktop, otherwise block so we can center*/
+
+
+    /*Inline-block for desktop, otherwise block so we can center it*/
     nav{
         display: inline-block;  
     }
@@ -212,17 +224,16 @@ a:active{
 
     header h1#active-page, header h1{
         display: inline-block;
+        padding: 0 10px;
     }
+
 
     #wrapper section{
-        flex: 1 40%;
+        flex: 0 47%;
+        margin: 3% 0;
     }
-    #wrapper section#high-concept{
-        flex: 0 auto;
+    #wrapper section#high-concept, #wrapper section#gameplay{
+        flex: 1 100%;
     }
-    #wrapper section#gameplay{
-        flex-basis: 100%;
-    }
-
 
 }

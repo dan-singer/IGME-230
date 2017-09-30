@@ -55,7 +55,7 @@ img{
 }
 section{
     background: linear-gradient(to right, #222121, grey);
-    margin: 10% auto;
+    margin: 5vh auto;
     padding: 10px;
     width: 85%;
 }
@@ -179,10 +179,6 @@ a:active{
         display: block;
     }
 
-    section{
-        margin: 5% auto;
-    }
-
     /*Increase font size for tablets and desktop*/
     p, li{
         font-size: 20px;
@@ -205,9 +201,6 @@ a:active{
     }
     .desk-img{
         display: block;
-    }
-    section{
-        margin: 3% auto;
     }
 
 
@@ -233,7 +226,6 @@ a:active{
 
     #wrapper section{
         flex: 0 47%;
-        margin: 3% 0;
     }
     #wrapper section#high-concept, #wrapper section#gameplay{
         flex: 1 100%;

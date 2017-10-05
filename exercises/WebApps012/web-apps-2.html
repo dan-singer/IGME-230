@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Hello-4</title>
+        <script>
+            // Common JS Objects
+            let colors = ["red","green","blue"]; // Array literal
+            let person = {name:"Fred",age:20,school:"RIT"};   // Object literal
+            let month = new Date().getMonth(); 
+            let age = Math.round(20.999);
+
+            // Treat "primitives" like objects
+            let sum = 99.980809809;             // Number
+            let name = "Fred";                  // String
+            let isLoggedIn = false;             // Boolean
+            let userName = undefined;
+            let data = null;
+
+            //Review Exercise///////////////////
+            colors.push("cyan");
+            console.log(`Last element of color array: ${colors[colors.length-1]}`);
+            for (let i=0; i<colors.length; i++)
+                console.log(`colors[${i}] = ${colors[i]}`);
+            console.log(`${person.name} goes to ${person.school}`);
+            console.log(`Seconds since 1970: ${new Date().getTime()}`);
+            console.log(`PI = ${Math.PI}`);
+            console.log(`Abs of -999 is ${Math.abs(-999)}`);
+            console.log(`Hello in all caps is ${"Hello".toUpperCase()}`);
+            /////////////////////////////////////
+
+
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

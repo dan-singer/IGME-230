@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Web Apps-4</title>
+        <style>
+            body{border:1px solid gray;}
+        </style>
+    </head>
+    <body>
+        <h1>My Favorites</h1>
+        <h2>My Favorite Colors</h1>
+
+        <ol id="colorsList">
+            
+        </ol>
+
+        <h2>My Favorite Foods</h1>
+
+        <ol id="foodsList">
+            
+        </ol>
+
+        <h2>My Favorite Links</h1>
+
+        <ol id="linksList">
+            
+        </ol>
+
+        <script>
+            let colors = ["Green", "Blue", "Violet", "Red"];
+            let foods = ["Pasta", "Filet Mignon", "Ice Cream", "Pizza"]; // add some foods
+
+            let colorList = document.querySelector("#colorsList");
+            for (let i=0; i<colors.length; i++){
+                let liColor = document.createElement("li");
+                liColor.innerHTML = colors[i];
+                colorList.appendChild(liColor);
+            }
+
+            let foodList = document.querySelector("#foodsList");
+            for (let food of foods){
+                let liFood = document.createElement("li");
+                liFood.innerHTML = food;
+                foodList.appendChild(liFood);
+            }
+
+            // Optional (worth an extra 5 points) - can you figure out how to pull the key
+            // and value from the links object literal?
+            let links = {
+                "YouTube": "https://www.youtube.com/",
+                "The Verge": "https://www.theverge.com/",
+                "Gamnesia": "https://www.gamnesia.com/"
+            }
+
+            let linksList = document.querySelector("#linksList");
+            for (let link in links){
+                let li = document.createElement("li");
+                let a = document.createElement("a");
+                a.innerHTML = link;
+                a.href = links[link];
+
+                li.appendChild(a);
+                linksList.appendChild(li);
+            }
+                    
+        </script>
+    </body>
+</html>

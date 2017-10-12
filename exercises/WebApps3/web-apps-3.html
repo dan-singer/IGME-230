@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>DOM-3</title>
+        <style>
+            body{border:1px solid gray;}
+            p b{transform: rotate(20deg)}
+        </style>
+    </head>
+    <body>
+        <h1>My Page</h1>
+        <h2>Info</h2>
+        <h2>Pictures</h2>
+        <h2>More Info</h2>
+        <p>Blah <b>Blah</b> Blah</p>
+        <p>Blah <b>Blah</b> Blah</p>
+        <p id="lastParagraph">Blah <b>Blah</b> Blah</p>
+        <footer>Copyright &copy; <b>20XX</b></footer>
+        <script>
+            document.querySelector("h1:first-of-type").innerHTML = "My UFO Page";
+            document.querySelector("h2:first-of-type").innerHTML = "My UFO Info";
+            document.querySelector("h2:nth-of-type(2)").innerHTML = "My UFO Pictures";
+            document.querySelector("h2:nth-of-type(3)").innerHTML = "";
+            let body = document.querySelector("body");
+            body.style.fontFamily = "sans-serif";
+            body.style.color = "#ba312c";
+
+            let p1 = document.querySelector("p:first-of-type");
+            p1.innerHTML = "Report your UFO sightings here: <a href='http://www.nuforc.org'>http://www.nuforc.org</a>";
+            p1.style.color = "green";
+            p1.style.fontWeight = "bold";
+            p1.style.fontSize = "2em";
+            p1.style.textTransform = "uppercase";
+            p1.style.textShadow = "3px 2px #A44";
+
+            document.querySelector("p:nth-of-type(2)").innerHTML = "";
+            document.querySelector("p:nth-of-type(3)").innerHTML = "<img src='https://i.cbc.ca/1.3623708.1465446618!/fileImage/httpImage/image.jpg_gen/derivatives/16x9_1180/irrelevant-show-ufo.jpg'/>";
+            document.querySelector("footer b").innerHTML = "2017";
+            document.querySelector("footer").innerHTML += " Dan Singer";
+        </script>
+    </body>
+</html>

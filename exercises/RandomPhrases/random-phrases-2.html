@@ -27,7 +27,7 @@
         </footer>
 
         <script>
-            function newPhrase(){
+            function displayQuote(){
                 let phrases = ["Find the secret amulet of power.", "Extract the truth from the all-knowing orb.",
                                 "Travel to the kingdom of Lancelot and steal the map of wisdom.",
                                 "Discover the true meaning of life.", "Search for the coins of courage tbroughout the lands.",
@@ -36,8 +36,10 @@
                 let phrase = phrases[index];
                 document.querySelector("#content h2").innerHTML = phrase;
             }
+            displayQuote();
 
-
+            document.querySelector("#content button").onclick = displayQuote;
+                
         </script>
     </body>
 

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Web Apps-6</title>
+	<style>
+		body{
+			font-family:sans-serif;
+		}
+		#colorform{
+			background-color:#dfecdf;
+			color: #111;
+			padding:1em;width:400px;
+		}
+		#colorform p#info{
+			background-color:white;
+			color: black;
+			width:300px;
+			height:100px;
+			padding:.5em;
+		}
+		
+		#colorform legend{ 
+			font-weight:bold;
+			font-size:1.2em;
+		}
+	</style>
+</head>
+<body>
+
+<div id="colorform">
+	<legend>Choose you favorite color!</legend>
+	<p><input type="checkbox" name="colorGroup" id="colorGroup" value="red" /> Red</p>
+	<p><input type="checkbox" name="colorGroup" id="colorGroup" value="green" /> Green</p>
+	<p><input type="checkbox" name="colorGroup" id="colorGroup" value="blue" /> Blue</p>
+	<p><button id="colorButton" type="button">Submit</button></p>
+	<p id="info"></p>
+</div>
+
+<script>
+	let checkboxes = document.querySelectorAll("input");
+
+	for (let checkbox of checkboxes){
+		checkbox.onchange = () => { updateInfo("You have selected ");};
+	}
+	document.querySelector("button").onclick = () => {updateInfo("Your FINAL CHOICE is ")};
+
+
+	let info = document.querySelector("#info");
+	//Generic updateInfo method, where prefix comes before the content and the rest is based on what is checked.
+	function updateInfo(prefix){
+
+
+		//Determine what we selected
+		let selected = [];
+		for (let i=0; i<checkboxes.length; i++){
+			if (checkboxes[i].checked)
+				selected.push(checkboxes[i]);
+		}
+		if (selected.length == 0)
+		{
+			info.innerHTML = "";	
+			return;
+		}
+
+		//Be grammatically correct based on the number of selections
+		info.innerHTML = prefix;
+		if (selected.length == 1){
+			info.innerHTML += selected[0].value;
+		}
+		else if (selected.length == 2){
+			info.innerHTML += `${selected[0].value} and ${selected[1].value}`;
+		}
+		else{
+			for (let i=0; i<selected.length; i++){
+				if (i != selected.length-1)
+				{
+					info.innerHTML += `${selected[i].value}, `; 
+				}
+				else{
+					info.innerHTML += `and ${selected[i].value}`;
+				}
+			}
+		}
+		info.innerHTML += "!";
+	}
+
+
+
+</script>
+</body>
+</html>

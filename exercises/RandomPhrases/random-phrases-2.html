@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>  
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
+        <link rel="stylesheet" type="text/css" href="css/style.css"/>
+        <link href="https://fonts.googleapis.com/css?family=Rye" rel="stylesheet">
+        <title>Random Phrases</title>
+    </head>
+    <body>
+        <header>
+            <h1>Quest Generator</h1>
+        </header>
+        <section id="main">
+            <h2 class="hidden">Hidden</h2>
+            <div id="blur">
+
+            </div>
+            <div id="content">
+                <h2>Phrase Content</h2>
+                <button>New Quest</button>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; Dan Singer 2017</p>
+        </footer>
+
+        <script>
+            function newPhrase(){
+                let phrases = ["Find the secret amulet of power.", "Extract the truth from the all-knowing orb.",
+                                "Travel to the kingdom of Lancelot and steal the map of wisdom.",
+                                "Discover the true meaning of life.", "Search for the coins of courage tbroughout the lands.",
+                                "Discover the secrets of Narnia and Hogwarts.", "Seek a job."];
+                let index = Math.floor(Math.random() * phrases.length);
+                let phrase = phrases[index];
+                document.querySelector("#content h2").innerHTML = phrase;
+            }
+
+
+        </script>
+    </body>
+
+</html>

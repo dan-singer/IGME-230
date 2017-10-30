@@ -9,7 +9,7 @@ body{
 
 header{
     margin: 0px;
-    padding: 8px;
+    padding: 4px;
     text-align: center;
     background-color: #353535;
     color: #928f8f;
@@ -22,6 +22,10 @@ header{
     display: flex;
     flex-flow: column;
     margin: 10vh 0;
+
+    /*Comment out later*/
+    display: none;
+    
 }
 
 #name-select h3{
@@ -49,6 +53,7 @@ button{
     border: 0px;
     padding: 5px;
     transition: background-color 0.3s;
+    font-size: 16px;
 }
 
 button:hover{
@@ -70,11 +75,74 @@ input:hover{
     border: 2px solid lightblue;
 }
 
+#board-wrapper{
+    /*Uncomment later*/
+    /*display: none;*/
+    background-color: #242222;
+    
+}
+
+#board{
+    width: 95vmin;
+    height: 95vmin;
+    position: relative;
+    margin: auto;
+}
+
+.cell{
+    position: absolute;
+}
+
+.checker{
+    position: absolute;
+}
+
+#info-bar{
+    text-align: center;
+    background-color: #353535;
+    color: white;
+    padding: 10px 0;
+}
+
+#popup{
+    z-index: -1;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 50vh;
+    background-color: #f56060;
+
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+
+    transition: 0.3s;
+
+}
+
+#popup h2{
+    position: absolute;
+    width: 100%;
+    top: 20%;
+    text-align: center;
+    color: white;
+}
+
+#popup button{
+    position: absolute;
+    width: 50%;
+    height: 20%;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+}
+
+
+
 footer{
     text-align: center;
     background-color: #353535;
     color: #928f8f;
-    margin-top: 5px;
     padding: 5px 0;
 }
 

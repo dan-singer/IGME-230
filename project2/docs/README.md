@@ -10,20 +10,20 @@
 - When not a king, you can move forward left or forward right
 - When a king, can also move backward left or backward right
 - When able to jump, you must jump at least once, though you can pick your jump.
-- When piece reaches furthest row, become king.
+- When checker reaches furthest row, become king.
 
 ## Code
-- Piece object
+- Checker object
     - makeKing() 
     - playerIndex
     - isKing
 - Player object
      - name
-     - pieces : Piece[]
-     - selectPiece(piece) 
-     - selectedPiece : piece
-     - getAvailableMoves(piece : Piece) -> Piece[] 
-     - movePiece(piece, targetCell)     
+     - checkers : checker[]
+     - selectChecker(checker) 
+     - selectedChecker : checker
+     - getAvailableMoves(checker : checker) -> checker[] 
+     - movechecker(checker, targetCell)     
      - hasWon() -> boolean 
 - Script scope
     - Variables
@@ -32,9 +32,9 @@
         - activePlayer : Number
     - Functions
         - generateBoard() 
-        - removePiece(cell) 
+        - removechecker(cell) 
         - showMessage(msg)
         - hideBoard()
         - showBoard()
     - Event Handlers
-        - board.onclick -> player.selectPiece or player.movePiece 
+        - board.onclick -> player.selectchecker or player.movechecker 

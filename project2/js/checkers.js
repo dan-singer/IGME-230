@@ -1,55 +1,9 @@
-//Object Factories//
-
-/**
- * Create a new player
- * @param {*String} name - name of player
- * @param {*Number} index - player index starting from zero
- */
-function makePlayer(name, index){
-    let player = {
-        name: name,        
-        index: index,
-        checkers: [],         
-        selectedChecker: null,
-        //Get available moves as an array of numbers
-        getAvailableMoves: function(checker){
-            return [];
-        },
-        //Move the specified checker to targetCell
-        moveChecker: function(checker, targetCell){
-            
-        },
-        //Determine if this player won
-        hasWon: function(){
-
-        }
-    }
-    Object.seal(player);
-    return player;
-}
-
-
-/**
- * Create a new checker
- */
-function makeChecker(){
-    let checker = {
-        isKing: false,
-        makeKing: function(){
-
-        }
-    }
-    Object.seal(checker);
-    return checker;
-
-}
-//Object Factories//
 
 
 //Script-scope variables
 let cells = [];
 let players = [];
-let activePlayer = -1;
+let activePlayer = 0;
 
 let board; 
 let bWidth;
@@ -151,6 +105,7 @@ function generateBoard(){
                 newChecker.style.top = parseInt(newCell.style.top) + checkerOffsetY;
                 newChecker.style.left = parseInt(newCell.style.left) + checkerOffsetX;
                 board.appendChild(newChecker);
+                players[curPlayerIndex].checkers.add(newChecker);
             }
 
             //This is to get the alternating colors in each row
@@ -177,7 +132,9 @@ window.onload = (e) => {
     bHeight = board.offsetHeight;
 
     //Comment this out later!
+    players.push(makePlayer("P1", 0), makePlayer("P2", 1));    
     generateBoard();
+
 
 
     let p1Input = document.querySelector("#p1-name");
@@ -198,6 +155,27 @@ window.onload = (e) => {
         }
     };
 
+    document.querySelector("#board").onclick = (e) => {
+
+        if (e.target.className == "checker"){
+            //Does this checker belong to the active player?
+            if (players[activePlayer].checkers.has(e.target))
+            {
+                //select it
+                players[activePlayer].selectChecker(e.target);
+            }
+        }
+        if (e.target.className == "cell"){
+            //Has the active player selected a cell?
+            if (players[activePlayer].selectedChecker != null){
+                //move the checker there
+                players[activePlayer].moveSelectedChecker(e.target);
+                players[activePlayer].deselectChecker();
+
+            }
+        }
+
+    };
 
 
 };

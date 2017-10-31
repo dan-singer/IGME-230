@@ -9,6 +9,7 @@ function makePlayer(name, index){
         name: name,        
         index: index,
         checkers: new Set(),         
+        jumpMap: new Map(),
         selectedChecker: null,
         //Get available moves as an array of numbers
         getAvailableMoves: function(checker){
@@ -34,6 +35,10 @@ function makePlayer(name, index){
         moveSelectedChecker: function(targetCell){
             this.selectedChecker.style.top =  parseInt(targetCell.style.top)  + targetCell.offsetWidth/2  - this.selectedChecker.offsetWidth/2 ;
             this.selectedChecker.style.left = parseInt(targetCell.style.left) + targetCell.offsetHeight/2 - this.selectedChecker.offsetHeight/2; 
+        },
+        removeChecker: function(checker){
+            this.checkers.delete(checker);
+            checker.remove();
         },
         //Determine if this player won
         hasWon: function(){

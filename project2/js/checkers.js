@@ -41,7 +41,7 @@ function showDialog(msg){
 function closeDialog(){
     let popup = document.querySelector("#popup");    
     popup.style.opacity = "0";
-    popup.style.zIndex = "-1"; //So we don't select this
+    setTimeout(() => {popup.style.zIndex = "-1";}, 1000);
 }
 
 
@@ -142,7 +142,7 @@ function generateBoard(){
 //Generates a map of checkers to a list of a possible cells they can move to
 function createCheckerMap(){
 
-//TODO possibly optimize this so we don't have to recreate this map entirely each turn
+    //TODO possibly optimize this so we don't have to recreate this map entirely each turn
     checkerMap.clear();
 
     let yDir = -1;
@@ -305,6 +305,12 @@ window.onload = (e) => {
                         selChecker.cell.checker = null;
                         selChecker.cell = e.target;
 
+                        //See if this checker should now be a king
+                        let row = Math.floor(parseInt(selChecker.cell.style.top) / selChecker.cell.offsetHeight);
+                        if ((activePlayer == 0 && row == 0) || (activePlayer == 1 && row == ROW_SIZE-1)){
+                            console.log("Transform to king!");
+                        }
+
                         //Deselect checker
                         players[activePlayer].deselectChecker();
 
@@ -313,7 +319,13 @@ window.onload = (e) => {
 
                         //Update the map
                         createCheckerMap();
+                    }
+                    else{
+                        showDialog("You must jump!");
                     }             
+                }
+                else{
+                    showDialog("Invalid move!");
                 }
 
 

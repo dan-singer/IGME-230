@@ -83,8 +83,8 @@ input:hover{
 }
 
 #board{
-    width: 95vmin;
-    height: 95vmin;
+    width: 91vmin;
+    height: 91vmin;
     position: relative;
     margin: auto;
 }

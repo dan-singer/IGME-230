@@ -23,10 +23,6 @@ header{
     display: flex;
     flex-flow: column;
     margin: 10vh 0;
-
-    /*Comment out later*/
-    display: none;
-    
 }
 
 #name-select h3{
@@ -49,7 +45,7 @@ header{
 }
 
 button{
-    background-color: #353535;
+    background-color: #242222;
     color: white;
     border: 0px;
     padding: 5px;
@@ -77,11 +73,9 @@ input:hover{
 }
 
 #board-wrapper{
-    /*Uncomment later*/
-    /*display: none;*/
+    display: none;
     background-color: #242222;
-    /* display: flex;
-    flex-wrap: wrap; */
+    flex-wrap: wrap; 
     justify-content: center;
     
 }
@@ -105,16 +99,13 @@ input:hover{
     transition: top 1s, left 1s;
 }
 
-.filler{
-    /* width: 2px; */
-}
-
-#info-bar{
+.player{
     text-align: center;
     background-color: #242222;
     color: white;
     padding: 10px 0;
-    /* flex: 1; */
+    font-size: 20px;
+    flex: 1 1 100%;
 }
 
 #popup{
@@ -161,4 +152,27 @@ footer{
 
 footer p{
     margin: 0px;
+}
+
+/*Media Queries*/
+@media screen and (min-width: 800px){
+    .player{
+        flex: 1 1 auto;
+        position: relative;
+    }
+    .player *{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform:translate(-50%,-50%);
+    }
+    .player:nth-of-type(1){
+        order: 1;
+    }
+    #board{
+        order: 2;
+    }
+    .player:nth-of-type(2){
+        order: 3;
+    }
 }

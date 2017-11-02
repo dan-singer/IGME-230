@@ -7,6 +7,7 @@ let activePlayer = 0;
 let checkerMap = new Map();
 
 let board; 
+let boardWrapper;
 let bWidth;
 let bHeight;
 
@@ -214,18 +215,24 @@ function createCheckerMap(){
 }
 
 
+/**
+ * Set the current player
+ * @param {*Number} index 
+ */
+function setPlayer(index){
+    let prevPlayer = activePlayer;
+    activePlayer = index;
+    let playerDivs = document.querySelectorAll(".player");
+    playerDivs[prevPlayer].children[0].style.color = "#353535";
+    playerDivs[activePlayer].children[0].style.color = "white";
+    
+}
+
 window.onload = (e) => {
 
 
-
+    boardWrapper = document.querySelector("#board-wrapper");
     board = document.querySelector("#board");
-    bWidth = board.offsetWidth;
-    bHeight = board.offsetHeight;
-
-    //Comment this out later!
-    players.push(makePlayer("P1", 0), makePlayer("P2", 1));    
-    generateBoard();
-    createCheckerMap();
 
 
     let p1Input = document.querySelector("#p1-name");
@@ -242,7 +249,25 @@ window.onload = (e) => {
         }
         else{
             document.querySelector("#name-select").style.display = "none"; 
-            generateBoard();           
+            players.push(
+                makePlayer(p1Input.value.trim(), 0),
+                makePlayer(p2Input.value.trim(), 1)
+            );
+            //Set dom player names
+            for (let i=0; i<players.length; i++)
+                document.querySelectorAll(".player")[i].children[0].textContent = players[i].name;
+            //Display board elements
+            boardWrapper.style.display = "flex";
+            bWidth = board.offsetWidth;
+            bHeight = board.offsetHeight;
+            //Create the board
+            generateBoard();  
+            //Generate correct paths      
+            createCheckerMap();   
+            //Make first player go first
+            activePlayer = 1;
+            setPlayer(0);
+            
         }
     };
 
@@ -320,7 +345,7 @@ window.onload = (e) => {
                         //If this wasn't a jump, or there are no more jumps available, go ahead and switch players. Otherwise there's another jump available.
                         if (!isJump || !players[activePlayer].jumpMap.has(selChecker.cell))
                             //Switch player
-                            activePlayer = nextPlayer;
+                            setPlayer(nextPlayer);
                         else
                             showDialog("You can jump again!");
                     }

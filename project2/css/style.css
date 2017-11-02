@@ -5,14 +5,15 @@
 
 body{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #353535;
 }
 
 header{
     margin: 0px;
-    padding: 4px;
     text-align: center;
     background-color: #353535;
     color: #928f8f;
+
 }
 
 
@@ -79,6 +80,9 @@ input:hover{
     /*Uncomment later*/
     /*display: none;*/
     background-color: #242222;
+    /* display: flex;
+    flex-wrap: wrap; */
+    justify-content: center;
     
 }
 
@@ -101,11 +105,16 @@ input:hover{
     transition: top 1s, left 1s;
 }
 
+.filler{
+    /* width: 2px; */
+}
+
 #info-bar{
     text-align: center;
-    background-color: #353535;
+    background-color: #242222;
     color: white;
     padding: 10px 0;
+    /* flex: 1; */
 }
 
 #popup{

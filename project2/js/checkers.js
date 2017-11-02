@@ -10,6 +10,7 @@ let board;
 let bWidth;
 let bHeight;
 
+
 const ROW_SIZE = 8;
 const COL_SIZE = 8;
 const NUM_PLAYERS = 2;
@@ -41,7 +42,7 @@ function showDialog(msg){
 function closeDialog(){
     let popup = document.querySelector("#popup");    
     popup.style.opacity = "0";
-    setTimeout(() => {popup.style.zIndex = "-1";}, 1000);
+    setTimeout(() => {popup.style.zIndex = "-1";}, 100);
 }
 
 
@@ -97,7 +98,7 @@ function generateBoard(){
         newChecker.src = `media/p${curPlayerIndex+1}-checker.svg`;
         newChecker.style.top = parseInt(newCell.style.top) + checkerOffsetY;
         newChecker.style.left = parseInt(newCell.style.left) + checkerOffsetX;
-        //Custom propertys for the dom
+        //Custom properties for the dom
         newChecker.cell = newCell;
         newCell.checker = newChecker;
         newChecker.isKing = false;
@@ -153,13 +154,13 @@ function createCheckerMap(){
             let i = Math.floor(parseInt(checker.style.top) / checker.cell.offsetHeight);
             let j = Math.floor(parseInt(checker.style.left) / checker.cell.offsetWidth);
             //Process the target cells
-            processCell(checker, player, i, j, yDir, -1);
-            processCell(checker, player, i, j, yDir,  1);            
+            processCell(checker.cell, player, i, j, yDir, -1);
+            processCell(checker.cell, player, i, j, yDir,  1);            
             //2. If it's a king, also process bottom
             if (checker.isKing)
             {
-                processCell(checker, player, i, j, -yDir, -1);
-                processCell(checker, player, i, j, -yDir,  1);
+                processCell(checker.cell, player, i, j, -yDir, -1);
+                processCell(checker.cell, player, i, j, -yDir,  1);
                 
             }
         }
@@ -167,7 +168,7 @@ function createCheckerMap(){
     }
 
     //Process the cell and add it to the checkersMap if it's a valid spot
-    function processCell(origChecker,player, i, j, iOff, jOff){
+    function processCell(origCell,player, i, j, iOff, jOff){
         if (cells[i+iOff] == null || cells[i+iOff][j+jOff] == null)
             return;
 
@@ -175,11 +176,11 @@ function createCheckerMap(){
         //If empty, add to map        
         if (cell.checker == null){
 
-            if (checkerMap.has(origChecker)){
-                checkerMap.get(origChecker).push(cell);
+            if (checkerMap.has(origCell)){
+                checkerMap.get(origCell).push(cell);
             }
             else{
-                checkerMap.set(origChecker, [cell]);
+                checkerMap.set(origCell, [cell]);
             }
         }
         else{
@@ -198,20 +199,18 @@ function createCheckerMap(){
             let jumpCell = cells[jumpI][jumpJ];
             if (jumpCell.checker == null)
             {
-                if (checkerMap.has(origChecker))
-                    checkerMap.get(origChecker).push(jumpCell);
+                if (checkerMap.has(origCell))
+                    checkerMap.get(origCell).push(jumpCell);
                 else
-                    checkerMap.set(origChecker, [jumpCell]);
+                    checkerMap.set(origCell, [jumpCell]);
                 
-                if (player.jumpMap.has(origChecker))
-                    player.jumpMap.get(origChecker).push(jumpCell);
+                if (player.jumpMap.has(origCell))
+                    player.jumpMap.get(origCell).push(jumpCell);
                 else
-                    player.jumpMap.set(origChecker, [jumpCell]);
+                    player.jumpMap.set(origCell, [jumpCell]);
             }
-
         }
     }
-
 }
 
 
@@ -264,11 +263,11 @@ window.onload = (e) => {
             let selChecker = players[activePlayer].selectedChecker;
             if (selChecker != null){
                 //Is this move in the checkersMap? 
-                if (checkerMap.has(selChecker) && checkerMap.get(selChecker).includes(e.target))
+                if (checkerMap.has(selChecker.cell) && checkerMap.get(selChecker.cell).includes(e.target))
                 {
                     //Does the player have any jumps? If so, is this pairing in the players jumpMap?
                     let jumpMap = players[activePlayer].jumpMap;
-                    let isJump = (jumpMap.has(selChecker) && jumpMap.get(selChecker).includes(e.target));
+                    let isJump = (jumpMap.has(selChecker.cell) && jumpMap.get(selChecker.cell).includes(e.target));
                     if (jumpMap.size == 0 || isJump)
                     {
                         //Determine the next player
@@ -306,19 +305,24 @@ window.onload = (e) => {
                         selChecker.cell = e.target;
 
                         //See if this checker should now be a king
-                        let row = Math.floor(parseInt(selChecker.cell.style.top) / selChecker.cell.offsetHeight);
+                        let row = Math.floor((parseInt(e.target.style.top) + parseInt(e.target.offsetHeight/2)) / e.target.offsetHeight);
                         if ((activePlayer == 0 && row == 0) || (activePlayer == 1 && row == ROW_SIZE-1)){
-                            console.log("Transform to king!");
+                            selChecker.isKing = true;
+                            selChecker.src = `media/p${activePlayer+1}-checker-king.svg`;
                         }
 
                         //Deselect checker
                         players[activePlayer].deselectChecker();
-
-                        //Switch player
-                        activePlayer = nextPlayer;
-
                         //Update the map
                         createCheckerMap();
+
+
+                        //If this wasn't a jump, or there are no more jumps available, go ahead and switch players. Otherwise there's another jump available.
+                        if (!isJump || !players[activePlayer].jumpMap.has(selChecker.cell))
+                            //Switch player
+                            activePlayer = nextPlayer;
+                        else
+                            showDialog("You can jump again!");
                     }
                     else{
                         showDialog("You must jump!");

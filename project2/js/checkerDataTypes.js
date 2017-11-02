@@ -11,6 +11,8 @@ function makePlayer(name, index){
         checkers: new Set(),         
         jumpMap: new Map(),
         selectedChecker: null,
+        justJumped: false,
+        multiJumping: false,
         //Get available moves as an array of numbers
         getAvailableMoves: function(checker){
             return [];
@@ -49,18 +51,3 @@ function makePlayer(name, index){
     return player;
 }
 
-
-/**
- * Create a new checker
- */
-function makeChecker(){
-    let checker = {
-        isKing: false,
-        makeKing: function(){
-
-        }
-    }
-    Object.seal(checker);
-    return checker;
-
-}

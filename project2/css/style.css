@@ -118,7 +118,7 @@ input:hover{
     flex: 1 1 100%;
 }
 
-#popup{
+#popup, #popup-win{
     z-index: -1;
     opacity: 0;
     position: absolute;
@@ -131,10 +131,10 @@ input:hover{
     transform:translate(-50%, -50%);
 
     transition: 0.3s;
-
 }
 
-#popup h2{
+
+#popup h2, #popup-win h2{
     position: absolute;
     width: 100%;
     top: 20%;
@@ -149,6 +149,21 @@ input:hover{
     top: 100%;
     left: 50%;
     transform: translate(-50%, -100%);
+}
+
+
+/*Win dialog*/
+#popup-win div{
+    position: absolute;
+    width: 100%;
+    height: 20%;
+    top: 100%;
+    transform: translate(0, -100%);
+    display: flex;
+    justify-content: space-around;
+}
+#popup-win div button{
+    width: 40%;
 }
 
 

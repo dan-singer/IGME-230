@@ -33,19 +33,28 @@ const SECONDARY_COLOR = "red";
 function showDialog(msg){
     let popup = document.querySelector("#popup");
     popup.style.opacity = "1";
-    popup.style.zIndex = "1"; //So we can select it    
-    document.querySelector("#popup h2").innerHTML = msg;
+    popup.style.zIndex = "3"; //So we can select it    
+    popup.children[0].innerHTML = msg;
 }
 
 /**
  * Close the popup message
  */
-function closeDialog(){
-    let popup = document.querySelector("#popup");    
+function closeDialog(popupId="popup"){
+    let query = `#${popupId}`;
+    let popup = document.querySelector(query);    
     popup.style.opacity = "0";
     setTimeout(() => {popup.style.zIndex = "-1";}, 100);
 }
 
+
+function showWinDialog(index){
+    let playerName = players[index].name;
+    let popup = document.querySelector("#popup-win");
+    popup.style.opacity = "1";
+    popup.style.zIndex = "3";
+    popup.children[0].innerHTML = `${playerName} Won!`;
+}
 
 /**
  * Create the board with the cells and checkers
@@ -92,6 +101,7 @@ function generateBoard(){
         newCell.style.left = `${tileWidth*j}px`;
         return newCell;
     }
+    //Create a checker function
     let makeChecker = (i, j, newCell) => {
 
         let newChecker = baseChecker.cloneNode();
@@ -141,7 +151,9 @@ function generateBoard(){
 }
 
 
-//Generates a map of checkers to a list of a possible cells they can move to
+/**
+ * Generates a map of cells containing checkers to a list of a possible cells those checkers can move to
+ */
 function createCheckerMap(){
 
     //TODO possibly optimize this so we don't have to recreate this map entirely each turn
@@ -216,7 +228,7 @@ function createCheckerMap(){
 
 
 /**
- * Set the current player
+ * Set the current player, and check if they lost the game
  * @param {*Number} index 
  */
 function setPlayer(index){
@@ -225,12 +237,86 @@ function setPlayer(index){
     let playerDivs = document.querySelectorAll(".player");
     playerDivs[prevPlayer].children[0].style.color = "#353535";
     playerDivs[activePlayer].children[0].style.color = "white";
-    
+    //Also check if this player lost
+    if (hasPlayerLost(activePlayer)){
+        showWinDialog(prevPlayer); //The previous player must have won if the activePlayer lost
+    }
 }
 
+
+/**
+ * Determine if the player lost. Return true if so, false if not.
+ * @param {*Number} index 
+ */
+function hasPlayerLost(index){
+
+    let lost = true;
+    let p = players[activePlayer];
+    for (let checker of p.checkers)
+    {
+        if (checkerMap.has(checker.cell))
+        {
+            lost = false;
+            break;
+        }
+    }
+
+    return lost;
+
+
+}
+
+
+/**
+ * Reset the state of the app back to when it was first loaded
+ */
+function reset(){
+    cells = [];
+    players = [];
+    activePlayer = 0;
+    checkerMap = new Map();
+    board.innerHTML = "";    
+    boardWrapper.style.display = "none";
+    document.querySelector("#name-select").style.display = "flex"; 
+    document.querySelectorAll("input[type='text']").forEach( (e) => {e.value = "";});
+}
+
+/**
+ * Setup the game of checkers. Assume that the players array, board reference, and boardWrapper reference are already setup.
+ */
+function initGameWithPlayers(){
+
+    //Reset player checkers
+    for (let player of players){
+        player.checkers.clear();
+    }
+    //Remove the board's children, if any
+    board.innerHTML = "";
+    //Clear cells
+    cells = [];
+
+    
+    //Set player names in the dom
+    for (let i=0; i<players.length; i++)
+        document.querySelectorAll(".player")[i].children[0].textContent = players[i].name;
+
+    //Display board elements
+    boardWrapper.style.display = "flex";
+    bWidth = board.offsetWidth;
+    bHeight = board.offsetHeight;
+    //Create the board
+    generateBoard();  
+    //Generate correct paths      
+    createCheckerMap();   
+    //Make first player go first
+    activePlayer = 1; //So we know the previous player
+    setPlayer(0);
+}   
+
+/**
+ * Setup event handlers for elements on the page, and setup some variables
+ */
 window.onload = (e) => {
-
-
     boardWrapper = document.querySelector("#board-wrapper");
     board = document.querySelector("#board");
 
@@ -238,8 +324,21 @@ window.onload = (e) => {
     let p1Input = document.querySelector("#p1-name");
     let p2Input = document.querySelector("#p2-name");
 
-    document.querySelector("#popup button").onclick = closeDialog;
+    //Close dialog button logic
+    document.querySelector("#popup button").onclick = (e) => closeDialog(); //We have to be clear, otherwise it will pass in e as an argument to closeDialog
 
+    //Setup win button event handlers
+    document.querySelector("#rematch").onclick = (e) => {
+        //Re-initialize the game with same players
+        initGameWithPlayers();
+        closeDialog("popup-win");
+    };
+    document.querySelector("#start-over").onclick = (e) => {
+        reset();
+        closeDialog("popup-win");        
+    }
+
+    //Begin the game once player's names are entered
     document.querySelector("#btn-names").onclick = (e) => {
         //Validate player names
         if (p1Input.value.trim().length == 0 || p2Input.value.trim().length == 0 )
@@ -247,30 +346,18 @@ window.onload = (e) => {
             showDialog("Player names must not be blank!");
             return;
         }
-        else{
+        else
+        {
             document.querySelector("#name-select").style.display = "none"; 
             players.push(
                 makePlayer(p1Input.value.trim(), 0),
                 makePlayer(p2Input.value.trim(), 1)
             );
-            //Set dom player names
-            for (let i=0; i<players.length; i++)
-                document.querySelectorAll(".player")[i].children[0].textContent = players[i].name;
-            //Display board elements
-            boardWrapper.style.display = "flex";
-            bWidth = board.offsetWidth;
-            bHeight = board.offsetHeight;
-            //Create the board
-            generateBoard();  
-            //Generate correct paths      
-            createCheckerMap();   
-            //Make first player go first
-            activePlayer = 1;
-            setPlayer(0);
-            
+            initGameWithPlayers();
         }
     };
 
+    //Check what was clicked on the board
     document.querySelector("#board").onclick = (e) => {
 
         //Select a checker to move
@@ -319,7 +406,7 @@ window.onload = (e) => {
                             let i = Math.floor(midY / e.target.offsetHeight);
                             let j = Math.floor(midX / e.target.offsetWidth);
                             //4.Remove that cell's checker from the player
-                            players[nextPlayer].removeChecker(cells[i][j].checker);
+                            players[nextPlayer].removeChecker(cells[i][j].checker, 500);
                             //5.Update that cell's connections
                             cells[i][j].checker = null;
                         }
@@ -336,8 +423,8 @@ window.onload = (e) => {
                             selChecker.src = `media/p${activePlayer+1}-checker-king.svg`;
                         }
 
-                        //Deselect checker
-                        players[activePlayer].deselectChecker();
+                        //Deselect checker (don't update visually for a second, however, to preserve z-index and selection border)
+                        players[activePlayer].deselectChecker(1000);
                         //Update the map
                         createCheckerMap();
 

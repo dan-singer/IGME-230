@@ -13,12 +13,17 @@ function makePlayer(name, index){
         selectedChecker: null,
         //Select the specified checker
         selectChecker: function(checker){
+
+            //Make sure we don't double-select this
+            if (selectedChecker == checker)
+                return;
+
             if (this.selectedChecker != null)
                 this.deselectChecker(this.selectedChecker);
 
             this.selectedChecker = checker;
-            //TODO make this prettier
-            this.selectedChecker.style.border = "1px solid white";
+            let src = this.selectedChecker.src;
+            this.selectedChecker.src = `${src.substring(0, src.indexOf("."))}-sel.svg`;
 
             //Increase z-index so it's visible if we jump
             this.selectedChecker.style.zIndex = "2";
@@ -28,8 +33,9 @@ function makePlayer(name, index){
         deselectChecker: function(visualDelay=0){
 
             setTimeout((previouslySelectedChecker) => {
-                //TODO make this prettier
-                previouslySelectedChecker.style.border = "none";          
+
+                let src = previouslySelectedChecker.src;
+                previouslySelectedChecker.src = `${src.substring(0, src.indexOf("-sel"))}.svg`;       
                 //Reset z-index back to normal
                 previouslySelectedChecker.style.zIndex = "1";
             }, visualDelay, this.selectedChecker);

@@ -420,7 +420,7 @@ window.onload = (e) => {
                         let row = Math.floor((parseInt(e.target.style.top) + parseInt(e.target.offsetHeight/2)) / e.target.offsetHeight);
                         if ((activePlayer == 0 && row == 0) || (activePlayer == 1 && row == ROW_SIZE-1)){
                             selChecker.isKing = true;
-                            selChecker.src = `media/p${activePlayer+1}-checker-king.svg`;
+                            selChecker.src = `media/p${activePlayer+1}-checker-king-sel.svg`;
                         }
 
                         //Deselect checker (don't update visually for a second, however, to preserve z-index and selection border)

@@ -195,8 +195,29 @@ a:active{
 }
 a:visited{
     color: #dad4d4;
-    
 }
+
+/*Documentation page*/
+h1{
+    font-family: 'Poiret One', cursive;
+    text-align: center;
+    color: #928f8f;
+}
+li{
+    margin-left: 30px;
+}
+
+#doc-wrapper{
+    display: flex;
+    flex-direction: column;
+}
+
+#doc-wrapper section h2{
+    font-family: 'Poiret One', cursive;
+    font-weight: bold;    
+}
+
+
 
 /*---Media Queries---*/
 

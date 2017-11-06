@@ -47,7 +47,10 @@ function closeDialog(popupId="popup"){
     setTimeout(() => {popup.style.zIndex = "-1";}, 100);
 }
 
-
+/**
+ * Show a win dialog based on the player index provided
+ * @param {*Number} index 
+ */
 function showWinDialog(index){
     let playerName = players[index].name;
     let popup = document.querySelector("#popup-win");

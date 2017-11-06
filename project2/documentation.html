@@ -1,0 +1,57 @@
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="css/style.css"/>
+        <link href="https://fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet">        
+        <title>2P Checkers: Documentation</title>
+    </head>
+
+    <body>
+        <header>
+            <h1><a href="index.html">2P Checkers</a></h1>
+        </header>
+
+        <h1>Documentation</h1>
+
+        <div id="doc-wrapper">
+            <section id="process">
+                <h2>The Process</h2>
+                <p>I began by creating a mockup of what I wanted the Checkers app to look like with Inkscape. 
+                        After that, I started planning out what objects I wanted to create, and what properties and 
+                        functions they should have. After planning, I laid out the basic html, styled it appropriately,
+                        and added behaviour with JavaScript.
+                </p>
+            </section>
+
+            <section id="sources">
+                <h2>Sources</h2>
+                <ul>
+                    <li><a href="https://inkscape.org/en/">Inkscape</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/">Mozilla Web Docs</a></li>
+                    <li><a href="https://www.w3schools.com/">W3 Schools</a></li>
+                </ul>
+            </section>
+
+            <section id="special">
+                <h2>Special Features</h2>
+                <ul>
+                    <li>Be sure to try this on other devices, it's mobile friendly! (Note that resizing the window requires a page reload, however)</li>
+                    <li>The core logic is in checkers.js, and the player object is defined in checkerDataTypes.js</li>
+                    <li>You cannot move a checker to an invalid cell, and jumps are accounted for. This is done by utlizing a graph, implemented with the checkerMap Map object</li>
+                    <li>The players' checkers are stored in a Set, allowing for quick removal and checking</li>
+                </ul>
+            </section>
+
+            <section id="requirements">
+                <h2>Meeting the requirements</h2>
+                <p>
+                    This application is fun, runs without any errors, is visually appealing on all devices,
+                    uses proper HTML and CSS, contains well-documented JavaScript code, and is a polished,
+                    professional web application.
+                </p>
+            </section>
+        </div>
+    
+    </body>
+</html>

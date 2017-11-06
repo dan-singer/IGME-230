@@ -338,8 +338,8 @@ window.onload = (e) => {
         closeDialog("popup-win");        
     }
 
-    //Begin the game once player's names are entered
-    document.querySelector("#btn-names").onclick = (e) => {
+    //Validate player names, then initialize the checkerboard and game.
+    let validateThenInit = (e) => {
         //Validate player names
         if (p1Input.value.trim().length == 0 || p2Input.value.trim().length == 0 )
         {
@@ -354,6 +354,16 @@ window.onload = (e) => {
                 makePlayer(p2Input.value.trim(), 1)
             );
             initGameWithPlayers();
+        }
+    };
+
+
+    //Begin the game once player's names are entered, or enter is pressed
+    document.querySelector("#btn-names").onclick = validateThenInit;
+    document.onkeydown = (e) =>{
+        if (e.key == "Enter" && boardWrapper.style.display == "")
+        {
+            validateThenInit(e);
         }
     };
 

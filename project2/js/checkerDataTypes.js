@@ -15,7 +15,7 @@ function makePlayer(name, index){
         selectChecker: function(checker){
 
             //Make sure we don't double-select this
-            if (selectedChecker == checker)
+            if (this.selectedChecker == checker)
                 return;
 
             if (this.selectedChecker != null)
@@ -23,7 +23,7 @@ function makePlayer(name, index){
 
             this.selectedChecker = checker;
             let src = this.selectedChecker.src;
-            this.selectedChecker.src = `${src.substring(0, src.indexOf("."))}-sel.svg`;
+            this.selectedChecker.src = `${src.substring(0, src.indexOf(".svg"))}-sel.svg`;
 
             //Increase z-index so it's visible if we jump
             this.selectedChecker.style.zIndex = "2";

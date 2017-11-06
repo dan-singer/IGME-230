@@ -1,4 +1,8 @@
-
+/**
+ * checkers.js
+ * Author: Dan Singer
+ * November 6, 2017
+ */
 
 //Script-scope variables
 let cells = [];
@@ -316,6 +320,124 @@ function initGameWithPlayers(){
     setPlayer(0);
 }   
 
+
+/**
+ * Check what was clicked on the checkerboard, and respond appropriately
+ * @param {*Event} e 
+ */
+function handleBoardClick(e){
+    //Select a checker to move
+    if (e.target.className == "checker"){
+        //Does this checker belong to the active player?
+        if (players[activePlayer].checkers.has(e.target))
+        {
+            //select it
+            players[activePlayer].selectChecker(e.target);
+        }
+    }
+    //Click on a cell
+    if (e.target.className == "cell"){
+        //Has the active player selected a checker?
+        let selChecker = players[activePlayer].selectedChecker;
+        if (selChecker != null){
+            //Is this move in the checkersMap? 
+            if (checkerMap.has(selChecker.cell) && checkerMap.get(selChecker.cell).includes(e.target))
+            {
+                //Does the player have any jumps? If so, is this pairing in the players jumpMap?
+                let jumpMap = players[activePlayer].jumpMap;
+                let isJump = (jumpMap.has(selChecker.cell) && jumpMap.get(selChecker.cell).includes(e.target));
+                if (jumpMap.size == 0 || isJump)
+                {
+                    //Determine the next player
+                    let nextPlayer = activePlayer+1;
+                    if (nextPlayer > NUM_PLAYERS - 1)
+                        nextPlayer = 0;
+
+
+                    //move the checker there
+                    players[activePlayer].moveSelectedChecker(e.target);
+
+                    if (isJump){
+                        //Figure out what we jumped over
+
+                        //1.Get the two cells in question
+                        let cellA = selChecker.cell;
+                        let cellB = e.target;
+                        //2.Determine their midpoint
+                        let midX = (parseInt(cellA.style.left) + cellA.offsetWidth/2 + 
+                                    parseInt(cellB.style.left) + cellB.offsetWidth/2) / 2;
+                        let midY = (parseInt(cellA.style.top) + cellA.offsetHeight/2 + 
+                                    parseInt(cellB.style.top) + cellB.offsetHeight/2) / 2;
+                        //3.Convert that to cell index
+                        let i = Math.floor(midY / e.target.offsetHeight);
+                        let j = Math.floor(midX / e.target.offsetWidth);
+                        //4.Remove that cell's checker from the player
+                        players[nextPlayer].removeChecker(cells[i][j].checker, 500);
+                        //5.Update that cell's connections
+                        cells[i][j].checker = null;
+                    }
+
+                    //Update connections
+                    e.target.checker = selChecker;
+                    selChecker.cell.checker = null;
+                    selChecker.cell = e.target;
+
+                    //See if this checker should now be a king
+                    let row = Math.floor((parseInt(e.target.style.top) + parseInt(e.target.offsetHeight/2)) / e.target.offsetHeight);
+                    if ((activePlayer == 0 && row == 0) || (activePlayer == 1 && row == ROW_SIZE-1)){
+                        selChecker.isKing = true;
+                        selChecker.src = `media/p${activePlayer+1}-checker-king-sel.svg`;
+                    }
+
+                    //Deselect checker (don't update visually for a second, however, to preserve z-index and selection border)
+                    players[activePlayer].deselectChecker(1000);
+                    //Update the map
+                    createCheckerMap();
+
+
+                    //If this wasn't a jump, or there are no more jumps available, go ahead and switch players. Otherwise there's another jump available.
+                    if (!isJump || !players[activePlayer].jumpMap.has(selChecker.cell))
+                        //Switch player
+                        setPlayer(nextPlayer);
+                    else
+                        showDialog("You can jump again!");
+                }
+                else{
+                    showDialog("You must jump!");
+                }             
+            }
+            else{
+                showDialog("Invalid move!");
+            }
+
+
+        }
+    }
+}
+
+/**
+ * Validate player names, then initialize the checkerboard and game.
+ * @param {*Event} e 
+ */
+function validateThenInit(e, p1Input, p2Input){
+    //Validate player names
+    if (p1Input.value.trim().length == 0 || p2Input.value.trim().length == 0 )
+    {
+        showDialog("Player names must not be blank!");
+        return;
+    }
+    else
+    {
+        document.querySelector("#name-select").style.display = "none"; 
+        players.push(
+            makePlayer(p1Input.value.trim(), 0),
+            makePlayer(p2Input.value.trim(), 1)
+        );
+        initGameWithPlayers();
+    }
+};
+
+
 /**
  * Setup event handlers for elements on the page, and setup some variables
  */
@@ -341,125 +463,17 @@ window.onload = (e) => {
         closeDialog("popup-win");        
     }
 
-    //Validate player names, then initialize the checkerboard and game.
-    let validateThenInit = (e) => {
-        //Validate player names
-        if (p1Input.value.trim().length == 0 || p2Input.value.trim().length == 0 )
-        {
-            showDialog("Player names must not be blank!");
-            return;
-        }
-        else
-        {
-            document.querySelector("#name-select").style.display = "none"; 
-            players.push(
-                makePlayer(p1Input.value.trim(), 0),
-                makePlayer(p2Input.value.trim(), 1)
-            );
-            initGameWithPlayers();
-        }
-    };
 
 
     //Begin the game once player's names are entered, or enter is pressed
-    document.querySelector("#btn-names").onclick = validateThenInit;
+    document.querySelector("#btn-names").onclick = (e) => {validateThenInit(e, p1Input, p2Input);};
     document.onkeydown = (e) =>{
         if (e.key == "Enter" && boardWrapper.style.display == "")
         {
-            validateThenInit(e);
+            validateThenInit(e, p1Input, p2Input);
         }
     };
-
     //Check what was clicked on the board
-    document.querySelector("#board").onclick = (e) => {
+    document.querySelector("#board").onclick = handleBoardClick;
 
-        //Select a checker to move
-        if (e.target.className == "checker"){
-            //Does this checker belong to the active player?
-            if (players[activePlayer].checkers.has(e.target))
-            {
-                //select it
-                players[activePlayer].selectChecker(e.target);
-            }
-        }
-        //Click on a cell
-        if (e.target.className == "cell"){
-            //Has the active player selected a checker?
-            let selChecker = players[activePlayer].selectedChecker;
-            if (selChecker != null){
-                //Is this move in the checkersMap? 
-                if (checkerMap.has(selChecker.cell) && checkerMap.get(selChecker.cell).includes(e.target))
-                {
-                    //Does the player have any jumps? If so, is this pairing in the players jumpMap?
-                    let jumpMap = players[activePlayer].jumpMap;
-                    let isJump = (jumpMap.has(selChecker.cell) && jumpMap.get(selChecker.cell).includes(e.target));
-                    if (jumpMap.size == 0 || isJump)
-                    {
-                        //Determine the next player
-                        let nextPlayer = activePlayer+1;
-                        if (nextPlayer > NUM_PLAYERS - 1)
-                            nextPlayer = 0;
-
-
-                        //move the checker there
-                        players[activePlayer].moveSelectedChecker(e.target);
-
-                        if (isJump){
-                            //Figure out what we jumped over
-
-                            //1.Get the two cells in question
-                            let cellA = selChecker.cell;
-                            let cellB = e.target;
-                            //2.Determine their midpoint
-                            let midX = (parseInt(cellA.style.left) + cellA.offsetWidth/2 + 
-                                        parseInt(cellB.style.left) + cellB.offsetWidth/2) / 2;
-                            let midY = (parseInt(cellA.style.top) + cellA.offsetHeight/2 + 
-                                        parseInt(cellB.style.top) + cellB.offsetHeight/2) / 2;
-                            //3.Convert that to cell index
-                            let i = Math.floor(midY / e.target.offsetHeight);
-                            let j = Math.floor(midX / e.target.offsetWidth);
-                            //4.Remove that cell's checker from the player
-                            players[nextPlayer].removeChecker(cells[i][j].checker, 500);
-                            //5.Update that cell's connections
-                            cells[i][j].checker = null;
-                        }
-
-                        //Update connections
-                        e.target.checker = selChecker;
-                        selChecker.cell.checker = null;
-                        selChecker.cell = e.target;
-
-                        //See if this checker should now be a king
-                        let row = Math.floor((parseInt(e.target.style.top) + parseInt(e.target.offsetHeight/2)) / e.target.offsetHeight);
-                        if ((activePlayer == 0 && row == 0) || (activePlayer == 1 && row == ROW_SIZE-1)){
-                            selChecker.isKing = true;
-                            selChecker.src = `media/p${activePlayer+1}-checker-king-sel.svg`;
-                        }
-
-                        //Deselect checker (don't update visually for a second, however, to preserve z-index and selection border)
-                        players[activePlayer].deselectChecker(1000);
-                        //Update the map
-                        createCheckerMap();
-
-
-                        //If this wasn't a jump, or there are no more jumps available, go ahead and switch players. Otherwise there's another jump available.
-                        if (!isJump || !players[activePlayer].jumpMap.has(selChecker.cell))
-                            //Switch player
-                            setPlayer(nextPlayer);
-                        else
-                            showDialog("You can jump again!");
-                    }
-                    else{
-                        showDialog("You must jump!");
-                    }             
-                }
-                else{
-                    showDialog("Invalid move!");
-                }
-
-
-            }
-        }
-
-    };
 };

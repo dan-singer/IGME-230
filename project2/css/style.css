@@ -204,17 +204,29 @@ h1{
     color: #928f8f;
 }
 li{
-    margin-left: 30px;
+    margin-left: 20px;
 }
 
 #doc-wrapper{
     display: flex;
     flex-direction: column;
+    margin:0px 4%;
 }
 
+#doc-wrapper section{
+    background-color: #222020;
+    padding: 8px;
+    border-bottom: 1px solid grey;
+    margin: 10px 0;
+}
 #doc-wrapper section h2{
     font-family: 'Poiret One', cursive;
     font-weight: bold;    
+    color: #bb1616;
+}
+
+#doc-wrapper p, #doc-wrapper li{
+    color: #dad4d4;
 }
 
 
@@ -222,16 +234,54 @@ li{
 /*---Media Queries---*/
 
 
-/*Larger devices*/
+/*Tablets*/
 @media screen and (min-width: 481px)
 {
     input{
         height: 2em;
     }
+
+    
+    #doc-wrapper{
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    #doc-wrapper section{
+        flex: 0 1 45%;
+    }
+
+    #name-select{
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    #name-select h3{
+        flex: 0 1 40%;
+    }
+}
+
+/*Desktop*/
+@media screen and (min-width: 800px)
+{
+    h1{
+        font-size: 35px;
+    }
+    #doc-wrapper{
+        margin:0 15%;
+    }
+    #doc-wrapper section h2{
+        font-size: 25px;
+    }
+    #doc-wrapper p, #doc-wrapper li{
+        font-size: 20px;
+    }
 }
 
 
-/*Landscape devices (desktop, tablet/phone in landscape mode)*/
+
+/*Landscape devices (desktop, tablet/phone in landscape mode)
+  Using orientation here because board size is dependent on minimum viewport size (vmin), so small phones in landscape need to be accounted for. */
 @media screen and (orientation:landscape){
     .player{
         flex: 1 1 auto;
@@ -252,17 +302,4 @@ li{
     .player:nth-of-type(2){
         order: 3;
     }
-    input{
-        height: 2em;
-    }
-
-    #name-select{
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
-    #name-select h3{
-        flex: 0 1 40%;
-    }
-
 }

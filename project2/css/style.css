@@ -90,7 +90,7 @@ input:hover{
     background-color: #242222;
     flex-wrap: wrap; 
     justify-content: center;
-    
+    user-select: none;
 }
 
 #board{
@@ -98,11 +98,13 @@ input:hover{
     height: 91vmin;
     position: relative;
     margin: 10px auto;
+    user-select: none;
 }
 
 .cell{
     position: absolute;
     z-index: 0;
+    user-select: none;
     
 }
 
@@ -110,6 +112,8 @@ input:hover{
     position: absolute;
     z-index: 1;
     transition: top 1s, left 1s;
+    user-select: none;
+    
 }
 
 .player{
@@ -181,7 +185,7 @@ footer{
 }
 
 footer p{
-    margin: 0px;
+    margin-bottom: 10px;
 }
 
 a:link{
@@ -196,6 +200,8 @@ a:active{
 a:visited{
     color: #dad4d4;
 }
+
+
 
 /*Documentation page*/
 h1{
@@ -223,10 +229,12 @@ li{
     font-family: 'Poiret One', cursive;
     font-weight: bold;    
     color: #bb1616;
+    margin-bottom: 5px;
 }
 
 #doc-wrapper p, #doc-wrapper li{
     color: #dad4d4;
+    margin-bottom: 8px;
 }
 
 

@@ -23,6 +23,11 @@ const NUM_PLAYERS = 2;
 const PRIMARY_COLOR = "black";
 const SECONDARY_COLOR = "red";
 
+
+const PREFIX = "2797553b-1c1b-4e9a-a71e-333c0597e416-djs5435-";
+const KEY_PLAYER_BASE = "player-"; //append player index starting from zero to get key
+const KEY_SEEN_TUT = "seen-tutorial";
+
 //Note that files must be named p*-checker[-king]
     // * refers to player index + 1
     // -king is optional
@@ -61,6 +66,20 @@ function showWinDialog(index){
     popup.style.opacity = "1";
     popup.style.zIndex = "3";
     popup.children[0].innerHTML = `${playerName} Won!`;
+}
+
+/**
+ * Play an audio clip
+ * @param {*String} clipName - Name of the audio clip, excluding the path, but including the file extension. 
+ */
+function playAudioClip(clipName)
+{
+    //Look for an audio tag containing the clip name.
+    let query = `audio[src*="media/${clipName}"]`;
+    let clip = document.querySelector(query);
+    clip.pause();
+    clip.currentTime = 0;
+    document.querySelector(query).play();
 }
 
 /**
@@ -120,6 +139,8 @@ function generateBoard(){
         newChecker.cell = newCell;
         newCell.checker = newChecker;
         newChecker.isKing = false;
+        //Prevent dragging
+        newChecker.ondragstart = (e) => e.preventDefault();
         return newChecker;
     }
 
@@ -333,6 +354,7 @@ function handleBoardClick(e){
         {
             //select it
             players[activePlayer].selectChecker(e.target);
+            playAudioClip("select.wav");
         }
     }
     //Click on a cell
@@ -356,6 +378,8 @@ function handleBoardClick(e){
 
                     //move the checker there
                     players[activePlayer].moveSelectedChecker(e.target);
+
+                    playAudioClip("drop.wav");
 
                     if (isJump){
                         //Figure out what we jumped over
@@ -420,6 +444,7 @@ function handleBoardClick(e){
  * @param {*Event} e 
  */
 function validateThenInit(e, p1Input, p2Input){
+
     //Validate player names
     if (p1Input.value.trim().length == 0 || p2Input.value.trim().length == 0 )
     {
@@ -433,6 +458,22 @@ function validateThenInit(e, p1Input, p2Input){
             makePlayer(p1Input.value.trim(), 0),
             makePlayer(p2Input.value.trim(), 1)
         );
+
+        //Store in localStorage
+        for (let player of players)
+        {
+            localStorage.setItem(PREFIX + KEY_PLAYER_BASE + player.index, player.name);        
+        }
+
+
+        //Show a tutorial dialog if this is the user's first time
+        let seenTut = localStorage.getItem(PREFIX + KEY_SEEN_TUT);
+        if (!seenTut)
+            showDialog(`Click any checker piece to select it, and then click a valid cell to move it! 
+            For the full instructions on how to play checkers, view the rules on <a href="https://simple.wikipedia.org/wiki/Checkers#Rules">Wikipedia!</a>
+            `);
+        localStorage.setItem(PREFIX + KEY_SEEN_TUT, true);
+
         initGameWithPlayers();
     }
 };
@@ -448,6 +489,17 @@ window.onload = (e) => {
 
     let p1Input = document.querySelector("#p1-name");
     let p2Input = document.querySelector("#p2-name");
+
+
+    //Set player input values from local storage, if they exist
+    let inputs = [p1Input, p2Input];    
+    for (let i=0; i<NUM_PLAYERS; i++)
+    {
+        if (localStorage.getItem(PREFIX+KEY_PLAYER_BASE+i) != null){
+            inputs[i].value = localStorage.getItem(PREFIX+KEY_PLAYER_BASE+i);
+        }
+    }
+
 
     //Close dialog button logic
     document.querySelector("#popup button").onclick = (e) => closeDialog(); //We have to be clear, otherwise it will pass in e as an argument to closeDialog

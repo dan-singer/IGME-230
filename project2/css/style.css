@@ -15,7 +15,9 @@ header{
     color: #928f8f;
     border-bottom: 1px solid black;
     font-family: 'Poiret One', cursive;
-    
+}
+header h1 a{
+    text-decoration: none;
 }
 
 
@@ -38,7 +40,7 @@ header{
 #name-select button{
     margin: auto;
     width: 50vmin;
-    height: 5vmin;
+    min-height: 5vmin;
     flex: 0 1 auto;
 }
 
@@ -55,7 +57,10 @@ button{
     border: 0px;
     padding: 5px;
     transition: background-color 0.3s;
-    font-size: 16px;
+    font-size: 25px;
+    font-family: 'Poiret One', cursive;
+    font-weight:bold;
+    
 }
 
 button:hover{
@@ -177,6 +182,20 @@ footer{
 
 footer p{
     margin: 0px;
+}
+
+a:link{
+    color: #dad4d4;
+}
+a:hover{
+    color: #928f8f; 
+}
+a:active{
+    color:white;
+}
+a:visited{
+    color: #dad4d4;
+    
 }
 
 /*---Media Queries---*/

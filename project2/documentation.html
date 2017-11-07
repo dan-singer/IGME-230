@@ -41,9 +41,9 @@
                 <h2>Special Features</h2>
                 <ul>
                     <li>Be sure to try this on other devices, it's mobile friendly! <em>Resizing the window requires a page reload, however.</em></li>
-                    <li>The core logic is in checkers.js, and the player object is defined in checkerDataTypes.js</li>
-                    <li>You cannot move a checker to an invalid cell, and jumps are accounted for. This is done by utlizing a graph, implemented with the checkerMap Map object</li>
-                    <li>The players' checkers are stored in a Set, allowing for quick removal and lookup.</li>
+                    <li>The core logic is in checkers.js, and the player object is defined in checkerDataTypes.js.</li>
+                    <li>You cannot move a checker to an invalid cell, and jumps are must be made if possible. These features were implemented with two graphs, checkerMap and the players' jumpMaps.</li>
+                    <li>The players' checkers are stored in a Set, which allows for quick removal and quick processing to see checker is in the Set.</li>
                     <li>Sound effects have been implemented, and I created them with FL Studio.</li>
                     <li>The localStorage API is used to save previous player names and only show the tutorial on the player's first time using the application.</li>
                 </ul>

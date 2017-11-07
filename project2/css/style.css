@@ -133,7 +133,7 @@ input:hover{
     color: red;
 }
 .player:nth-of-type(3) p{
-    color: black;
+    color: grey;
 }
 
 #popup, #popup-win{

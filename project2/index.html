@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8"/>
@@ -23,16 +24,18 @@
             <button id="btn-names">Begin</button>           
         </section>
 
-        <div id="board-wrapper">
-            <section id="board">
-            </section>
+        <section id="board-wrapper">
+            <h6 class="hidden">hidden</h6> <!--Required to validate-->
+            <div id="board">
+            </div>
+            <!--Note that players below are the second and third div children of #board-wrapper, respectively!-->
             <div class="player">
                 <p>Player 1</p>
             </div>
             <div class="player">
                 <p>Player 2</p>
             </div>
-        </div>
+        </section>
 
 
         <div id="popup">

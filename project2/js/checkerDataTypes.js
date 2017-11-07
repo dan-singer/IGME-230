@@ -47,8 +47,8 @@ function makePlayer(name, index){
         },
         //Move the specified checker to targetCell
         moveSelectedChecker: function(targetCell){
-            this.selectedChecker.style.top =  parseInt(targetCell.style.top)  + targetCell.offsetWidth/2  - this.selectedChecker.offsetWidth/2 ;
-            this.selectedChecker.style.left = parseInt(targetCell.style.left) + targetCell.offsetHeight/2 - this.selectedChecker.offsetHeight/2; 
+            this.selectedChecker.style.top =  `${parseInt(targetCell.style.top)  + targetCell.offsetWidth/2  - this.selectedChecker.offsetWidth/2}px`;
+            this.selectedChecker.style.left = `${parseInt(targetCell.style.left) + targetCell.offsetHeight/2 - this.selectedChecker.offsetHeight/2}px`; 
         },
         removeChecker: function(checker, visualDelay=0){
             //Remove from set

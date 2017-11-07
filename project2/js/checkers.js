@@ -48,6 +48,7 @@ function showDialog(msg){
 
 /**
  * Close the popup message
+ * @param {*String} popupId
  */
 function closeDialog(popupId="popup"){
     let query = `#${popupId}`;
@@ -103,15 +104,15 @@ function generateBoard(){
 
     let baseCell = document.createElement("div");
     baseCell.className = "cell";
-    baseCell.style.width = tileWidth;
-    baseCell.style.height = tileHeight;
+    baseCell.style.width = `${tileWidth}px`;
+    baseCell.style.height = `${tileHeight}px`;
 
     let baseChecker = document.createElement("img");
     baseChecker.className = "checker";
     let checkerWidth = tileWidth * .75
     let checkerHeight = tileHeight * .75;
-    baseChecker.style.width = checkerWidth;
-    baseChecker.style.height = checkerHeight;
+    baseChecker.style.width = `${checkerWidth}px`;
+    baseChecker.style.height = `${checkerHeight}px`;
 
     let checkerOffsetX = (tileWidth / 2) - (checkerWidth/2);
     let checkerOffsetY = (tileHeight / 2) - (checkerHeight/2);
@@ -133,14 +134,17 @@ function generateBoard(){
         let newChecker = baseChecker.cloneNode();
         //Use player index to get the svg file. For ex, could be "p1-checker.svg"
         newChecker.src = `media/p${curPlayerIndex+1}-checker.svg`;
-        newChecker.style.top = parseInt(newCell.style.top) + checkerOffsetY;
-        newChecker.style.left = parseInt(newCell.style.left) + checkerOffsetX;
+        newChecker.style.top = `${parseInt(newCell.style.top) + checkerOffsetY}px`;
+        newChecker.style.left = `${parseInt(newCell.style.left) + checkerOffsetX}px`;
         //Custom properties for the dom
         newChecker.cell = newCell;
         newCell.checker = newChecker;
         newChecker.isKing = false;
         //Prevent dragging
         newChecker.ondragstart = (e) => e.preventDefault();
+        
+
+        
         return newChecker;
     }
 
@@ -209,7 +213,7 @@ function createCheckerMap(){
     }
 
     //Process the cell and add it to the checkersMap if it's a valid spot
-    function processCell(origCell,player, i, j, iOff, jOff){
+    function processCell(origCell, player, i, j, iOff, jOff){
         if (cells[i+iOff] == null || cells[i+iOff][j+jOff] == null)
             return;
 
@@ -263,8 +267,13 @@ function setPlayer(index){
     let prevPlayer = activePlayer;
     activePlayer = index;
     let playerDivs = document.querySelectorAll(".player");
-    playerDivs[prevPlayer].children[0].style.color = "#353535";
-    playerDivs[activePlayer].children[0].style.color = "white";
+
+    playerDivs[prevPlayer].children[0].style.fontWeight = "normal";
+    playerDivs[prevPlayer].children[0].style.textDecoration = "none";
+    
+    playerDivs[activePlayer].children[0].style.fontWeight = "bold";
+    playerDivs[activePlayer].children[0].style.textDecoration = "underline";
+    
     //Also check if this player lost
     if (hasPlayerLost(activePlayer)){
         showWinDialog(prevPlayer); //The previous player must have won if the activePlayer lost
@@ -304,7 +313,7 @@ function reset(){
     activePlayer = 0;
     checkerMap = new Map();
     board.innerHTML = "";    
-    boardWrapper.style.display = "none";
+    boardWrapper.style.display = ""; //This is the default value, even if it's none in css.
     document.querySelector("#name-select").style.display = "flex"; 
     document.querySelectorAll("input[type='text']").forEach( (e) => {e.value = "";});
 }
@@ -485,6 +494,8 @@ function validateThenInit(e, p1Input, p2Input){
 window.onload = (e) => {
     boardWrapper = document.querySelector("#board-wrapper");
     board = document.querySelector("#board");
+
+    
 
 
     let p1Input = document.querySelector("#p1-name");

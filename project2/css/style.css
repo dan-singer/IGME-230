@@ -90,7 +90,13 @@ input:hover{
     background-color: #242222;
     flex-wrap: wrap; 
     justify-content: center;
-    user-select: none;
+    
+    /*Courtesy of https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting-using-css/4358620#4358620*/
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+
 }
 
 #board{
@@ -98,13 +104,11 @@ input:hover{
     height: 91vmin;
     position: relative;
     margin: 10px auto;
-    user-select: none;
 }
 
 .cell{
     position: absolute;
     z-index: 0;
-    user-select: none;
     
 }
 
@@ -112,7 +116,6 @@ input:hover{
     position: absolute;
     z-index: 1;
     transition: top 1s, left 1s;
-    user-select: none;
     
 }
 
@@ -125,6 +128,12 @@ input:hover{
     font-family: 'Poiret One', cursive;
     font-weight: bold;    
     flex: 1 1 100%;
+}
+.player:nth-of-type(2) p{
+    color: red;
+}
+.player:nth-of-type(3) p{
+    color: black;
 }
 
 #popup, #popup-win{
@@ -201,6 +210,9 @@ a:visited{
     color: #dad4d4;
 }
 
+.hidden{
+    display: none;
+}
 
 
 /*Documentation page*/
@@ -301,13 +313,13 @@ li{
         left: 50%;
         transform:translate(-50%,-50%);
     }
-    .player:nth-of-type(1){
+    .player:nth-of-type(2){
         order: 1;
     }
     #board{
         order: 2;
     }
-    .player:nth-of-type(2){
+    .player:nth-of-type(3){
         order: 3;
     }
 }

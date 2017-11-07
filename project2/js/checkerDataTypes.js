@@ -14,13 +14,16 @@ function makePlayer(name, index){
         //Select the specified checker
         selectChecker: function(checker){
 
-            //Make sure we don't double-select this
-            if (this.selectedChecker == checker)
+            //Make sure we don't double-select this or select one that's moving
+            if (this.selectedChecker == checker || checker.isMoving)
                 return;
 
             if (this.selectedChecker != null)
                 this.deselectChecker(this.selectedChecker);
 
+            playAudioClip("select.wav");
+                
+            
             this.selectedChecker = checker;
             let src = this.selectedChecker.src;
             this.selectedChecker.src = `${src.substring(0, src.indexOf(".svg"))}-sel.svg`;
@@ -38,8 +41,10 @@ function makePlayer(name, index){
                 previouslySelectedChecker.src = `${src.substring(0, src.indexOf("-sel"))}.svg`;       
                 //Reset z-index back to normal
                 previouslySelectedChecker.style.zIndex = "1";
+                previouslySelectedChecker.isMoving = false;
             }, visualDelay, this.selectedChecker);
 
+            this.selectedChecker.isMoving = true;
 
             this.selectedChecker = null;  
             
@@ -49,6 +54,8 @@ function makePlayer(name, index){
         moveSelectedChecker: function(targetCell){
             this.selectedChecker.style.top =  `${parseInt(targetCell.style.top)  + targetCell.offsetWidth/2  - this.selectedChecker.offsetWidth/2}px`;
             this.selectedChecker.style.left = `${parseInt(targetCell.style.left) + targetCell.offsetHeight/2 - this.selectedChecker.offsetHeight/2}px`; 
+            playAudioClip("drop.wav");
+            
         },
         removeChecker: function(checker, visualDelay=0){
             //Remove from set

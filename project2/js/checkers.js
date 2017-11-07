@@ -363,7 +363,6 @@ function handleBoardClick(e){
         {
             //select it
             players[activePlayer].selectChecker(e.target);
-            playAudioClip("select.wav");
         }
     }
     //Click on a cell
@@ -387,8 +386,6 @@ function handleBoardClick(e){
 
                     //move the checker there
                     players[activePlayer].moveSelectedChecker(e.target);
-
-                    playAudioClip("drop.wav");
 
                     if (isJump){
                         //Figure out what we jumped over

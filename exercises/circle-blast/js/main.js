@@ -63,11 +63,12 @@ function setup() {
         src: ['sounds/fireball.mp3']
     });
 	// #7 - Load sprite sheet
-		
+    explosionTextures = loadSpriteSheet();
 	// #8 - Start update loop
 	app.ticker.add(gameLoop);
 	// #9 - Start listening for click events on the canvas
-	
+	app.view.onclick = fireBullet;
+    
 	// Now our `startScene` is visible
 	// Clicking the button calls startGame()
 }
@@ -204,9 +205,56 @@ function createCircles(numCircles){
     }
 }
 
+function fireBullet(){
+    if (paused) return;
+    
+    
+    if (levelNum == 1){
+        let b = new Bullet(0xFFFFFF, ship.x, ship.y);
+        bullets.push(b);
+        gameScene.addChild(b);
+    }
+    else{
+        let offsetX = -8;
+        let offsetIncrement = 8;
+        for (let i=0; i<3; i++){
+            //TODO
+        }
+    }
+    shootSound.play();
+
+}
+
 function loadLevel(){
     createCircles(levelNum * 5);
     paused = false;
+}
+
+function loadSpriteSheet(){
+    //Using second row
+    let spriteSheet = PIXI.BaseTexture.fromImage("images/explosions.png");
+    let width=64; let height=64;
+    let numFrames=16;
+    let textures = [];
+    for (let i=0; i<numFrames; i++){
+        let frame = new PIXI.Texture(spriteSheet, new PIXI.Rectangle(i*width, 64, width, height));
+        textures.push(frame);
+    }
+    return textures;
+}
+
+function createExplosion(x,y,frameWidth,frameHeight){
+    let w2 = frameWidth/2;
+    let h2 = frameHeight/2;
+    let expl = new PIXI.extras.AnimatedSprite(explosionTextures);
+    expl.x = x - w2;
+    expl.y = y - h2;
+    expl.animationSpeed = 1/7;
+    expl.loop = false;
+    expl.onComplete = e=>gameScene.removeChild(expl);
+    explosions.push(expl);
+    gameScene.addChild(expl);
+    expl.play();
 }
 
 function gameLoop(){
@@ -244,11 +292,25 @@ function gameLoop(){
     }
 	
 	// #4 - Move Bullets
-
+    for (let b of bullets){
+        b.move(dt);
+    }
 	
 	// #5 - Check for Collisions
 	for (let c of circles){
         //circles and bullets
+        for (let b of bullets){
+            if (rectsIntersect(c,b)){
+                fireballSound.play();
+                createExplosion(c.x,c.y,64,64);
+                gameScene.removeChild(c);
+                c.isAlive = false;
+                gameScene.removeChild(b);
+                b.isAlive = false;
+                increaseScoreBy(1);
+            }
+            if (b.y < -10) b.isAlive = false;
+        }
         //circles and ship
         if (c.isAlive && rectsIntersect(c,ship)){
             hitSound.play();
@@ -269,6 +331,10 @@ function gameLoop(){
         return;
     }
 	// #8 - Load next level
+    if (circles.length == 0){
+        levelNum++;
+        loadLevel();
+    }
 }
 
 function end(){

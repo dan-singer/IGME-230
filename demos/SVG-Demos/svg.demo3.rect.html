@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+    <title>SVG Demo 3</title>
+    <style>
+      body   { margin:0  }
+      circle { fill: red }
+    </style>
+  </head>
+            
+  <body>           
+    <svg width='100%' height='800px'></svg>
+  </body>
+
+  <script>
+    "use strict";
+    let xmlns = 'http://www.w3.org/2000/svg';
+    let svg = document.querySelector( 'svg' );
+    
+    let rect = document.createElementNS( xmlns, 'rect' );
+    rect.setAttribute( 'x', 0 );
+    rect.setAttribute( 'y', 0 );
+    rect.setAttribute( 'width',  40 );
+    rect.setAttribute( 'height', 40 );
+    
+    svg.appendChild( rect );
+  </script>
+
+</html>

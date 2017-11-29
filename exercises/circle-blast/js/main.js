@@ -8,11 +8,11 @@ document.body.appendChild(app.view);
 const sceneWidth = app.view.width;
 const sceneHeight = app.view.height;	
 
-// pre-load the images
-PIXI.loader.
-add(["images/Spaceship.png","images/explosions.png"]).
-on("progress",e=>{console.log(`progress=${e.progress}`)}).
-load(setup);
+// // pre-load the images
+// PIXI.loader.
+// add(["images/Spaceship.png","images/explosions.png"]).
+// on("progress",e=>{console.log(`progress=${e.progress}`)}).
+// load(setup);
 
 // aliases
 let stage;
@@ -31,6 +31,7 @@ let score = 0;
 let life = 100;
 let levelNum = 1;
 let paused = true;
+let gameOverScoreLabel;
 
 function setup() {
 	stage = app.stage;
@@ -77,8 +78,8 @@ function setup() {
 function createLabelsAndButtons(){
     let buttonStyle = new PIXI.TextStyle({
         fill: 0xFF0000,
-        fontSize: 48,
-        fontFamily: "Futura"
+        fontSize: 26,
+        fontFamily: "Press Start 2P"
     });
 
     //Setup startScene//
@@ -86,8 +87,8 @@ function createLabelsAndButtons(){
     let startLabel1 = new PIXI.Text("Circle Blast!");
     startLabel1.style = new PIXI.TextStyle({
         fill: 0xFFFFFF,
-        fontSize: 96,
-        fontFamily: "Futura",
+        fontSize: 36,
+        fontFamily: "Press Start 2P",
         stroke: 0xFF0000,
         strokeThickness: 6
     });
@@ -99,8 +100,8 @@ function createLabelsAndButtons(){
     let startLabel2 = new PIXI.Text("R U worthy..?");
     startLabel2.style = new PIXI.TextStyle({
         fill: 0xFFFFFF,
-        fontSize: 32,
-        fontFamily: "Futura",
+        fontSize: 24,
+        fontFamily: "Press Start 2P",
         fontStyle: "italic",
         stroke: 0xFF0000,
         strokeThickness: 6
@@ -145,14 +146,15 @@ function createLabelsAndButtons(){
 
     // 3 - set up `gameOverScene`\\
     // 3A - make game over text
-    let gameOverText = new PIXI.Text("Game Over!\n        :-O");
+    let gameOverText = new PIXI.Text("Game Over! :-O");
     textStyle = new PIXI.TextStyle({
         fill: 0xFFFFFF,
-        fontSize: 64,
-        fontFamily: "Futura",
+        fontSize: 32,
+        fontFamily: "Press Start 2P",
         stroke: 0xFF0000,
         strokeThickness: 6
     });
+    
     gameOverText.style = textStyle;
     gameOverText.x = 100;
     gameOverText.y = sceneHeight/2 - 160;
@@ -169,7 +171,19 @@ function createLabelsAndButtons(){
     playAgainButton.on('pointerover',e=>e.target.alpha = 0.7); // concise arrow function with no brackets
     playAgainButton.on('pointerout',e=>e.currentTarget.alpha = 1.0); // ditto
     gameOverScene.addChild(playAgainButton);
-    }
+
+    //Gameover score label
+    gameOverScoreLabel = new PIXI.Text();
+
+    let gameOverScoreLabelStyle = {};
+    Object.assign(gameOverScoreLabelStyle, textStyle);
+    gameOverScoreLabelStyle.fontSize = 28;
+    gameOverScoreLabel.style = gameOverScoreLabelStyle;
+
+    gameOverScoreLabel.x = 0; //Adjusted in end function
+    gameOverScoreLabel.y = gameOverText.y + gameOverText.height + 70;
+    gameOverScene.addChild(gameOverScoreLabel);
+}
 
 function startGame(){
     startScene.visible = false;
@@ -196,13 +210,68 @@ function decreaseLifeBy(value){
 }
 
 function createCircles(numCircles){
-    for (let i=0; i<numCircles; i++){
+    for (let i=0; i<numCircles/4; i++){
         let c = new Circle(10, 0xFFFF00);
         c.x = Math.random() * (sceneWidth-50) + 25;
         c.y = Math.random() * (sceneHeight-400) + 25;
         circles.push(c);
         gameScene.addChild(c);
     }
+
+    //orthogonal circles
+    for (let i=0; i<numCircles/4; i++){
+        let c = new Circle(10,0x00FFFF);
+        c.speed = Math.random() * 100 + 100;
+        if (Math.random() < .5){
+            c.x = Math.random() * (sceneWidth-50) + 25;
+            c.y = Math.random() * 100 + c.radius;
+            c.fwd = {x:0,y:1};
+        }
+        else{
+            c.x = Math.random() * 25 + c.radius;
+            c.y = Math.random() * (sceneHeight-80) - c.radius;
+            c.fwd = {x:1, y:0};
+        }
+        circles.push(c);
+        gameScene.addChild(c);
+    }
+
+    //wrapping circles
+    for (let i=0; i<numCircles/4; i++){
+        let c = new WrappingCircle(10, 0xFF00FF);
+        c.x = Math.random() * (sceneWidth - 50) + 25;
+        c.y = Math.random() * (sceneHeight - 400) + 25;
+        c.speed = 60;
+        circles.push(c);
+        gameScene.addChild(c);
+    }
+    //seeking circles
+    for (let i=0; i<numCircles/4; i++){
+        let c = new SeekingCircle(5, 0xFF0000);
+        c.x = Math.random() * (sceneWidth - 50) + 25;
+        c.y = Math.random() * (sceneHeight - 400) + 25;
+        c.speed = 60;
+        c.activate(ship);
+        circles.push(c);
+        gameScene.addChild(c);
+    }
+    //orthogonal wrapping circles
+    for(let i=0;i<numCircles/4;i++){	
+        let c = new WrappingCircle(10,0x00FF00);
+        c.speed = Math.random() * 100 + 100;
+        if (Math.random()<.5){
+            c.x = Math.random() * (sceneWidth - 50) + 25;
+            c.y = Math.random() * 100 + c.radius * 2;
+            c.fwd = {x:0,y:1}
+        }else{
+            c.x = Math.random() * 25 + c.radius * 2;
+            c.y = Math.random() * (sceneHeight - 80) - c.radius * 2;
+            c.fwd = {x:1,y:0};
+        }
+        circles.push(c);
+        gameScene.addChild(c);
+    }
+        
 }
 
 function fireBullet(){
@@ -216,9 +285,12 @@ function fireBullet(){
     }
     else{
         let offsetX = -8;
-        let offsetIncrement = 8;
+        let offsetIncrement = Math.abs(offsetX);
         for (let i=0; i<3; i++){
-            //TODO
+            let b = new Bullet(0xFFFFFF, ship.x + offsetX, ship.y);
+            bullets.push(b);
+            gameScene.addChild(b);
+            offsetX += offsetIncrement;
         }
     }
     shootSound.play();
@@ -282,12 +354,12 @@ function gameLoop(){
 	for (let c of circles){
         c.move(dt);
         if (c.x <= c.radius || c.x >= sceneWidth - c.radius){
-            c.reflectX();
-            c.move(dt);
+            c.reflectX(sceneWidth);
+            //c.move(dt);
         }
         if (c.y <= c.radius || c.y >= sceneHeight - c.radius){
-            c.reflectY();
-            c.move(dt);
+            c.reflectY(sceneHeight);
+            //c.move(dt);
         }
     }
 	
@@ -349,6 +421,9 @@ function end(){
     explosions.forEach(e=>gameScene.removeChild(e));
     explosions = [];
 
+    gameOverScoreLabel.text = `Your final score: ${score}`;
+    //Center it
+    gameOverScoreLabel.x = sceneWidth/2 - gameOverScoreLabel.width/2;
     gameOverScene.visible = true;
     gameScene.visible = false;
 }

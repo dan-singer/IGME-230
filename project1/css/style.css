@@ -161,6 +161,7 @@ a:active{
 #game{
     text-align: center;
     height: 80vh;
+    padding: 0;
 }
 
 #game h1{

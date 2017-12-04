@@ -16,6 +16,7 @@ class GameObject extends PIXI.Container{
         this.name = name;
         this.sprites = new Map();
         this.activeSprite = null;
+        this.motor = null;
     }
 
     /**
@@ -63,9 +64,36 @@ class GameObject extends PIXI.Container{
     /**
      * Called each frame. Override this in subclasses.
      */
-    update(){ 
-        let dt = 1 / this.app.ticker.FPS;
-        this.x += 100 * dt;
-        this.y += 100 * dt;
+    update(){ }
+}
+
+
+/**
+ * Component class responsible for applying simple physics to gameObjects
+ */
+class Motor{
+
+    constructor(gameObject){
+        this.gameObject = gameObject;
+        this.velocity = new Vector2(0,0);
+        this.acceleration = new Vector2(0,0);
+        this.mass = 1;
+        gameObject.app.ticker.add(()=>this.update());
+    }
+
+    get posVector(){
+        return new Vector2(this.position.x, this.position.y);
+    }
+
+    applyForce(force){
+        this.acceleration.add(force.scale(1/this.mass));
+    }
+
+    update(){
+        let dt = 1 / this.gameObject.app.ticker.FPS;
+        this.velocity.add(Vector2.scale(this.acceleration, dt));
+        let tempPos = this.posVector.add(Vector2.scale(this.velocity, dt));
+        this.position.x = tempPos.x; this.position.y = tempPos.y;
+        this.acceleration.clear();
     }
 }

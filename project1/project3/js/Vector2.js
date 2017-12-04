@@ -93,6 +93,23 @@ class Vector2{
         this.x = newX; this.y = newY;
     }
 
+    /**
+     * Make this vector's x and y components be zero.
+     */
+    clear(){
+        this.x = 0; this.y = 0;
+    }
+
+    static add(a, b){
+        return new Vector2(a.x + b.x, a.y + b.y);
+    }
+    static subtract(a,b){
+        return new Vector2(a.x - b.x, a.y - b.y);
+    }
+    static scale(a, scalar){
+        return new Vector2(a.x * scalar, a.y * scalar);
+    }
+
 }
 
 let vec = new Vector2(1,0);

@@ -45,6 +45,7 @@ class Vector2{
     add(other){
         this.x += other.x;
         this.y += other.y;
+        return this;
     }
 
     /**
@@ -54,6 +55,7 @@ class Vector2{
     subtract(other){
         this.x -= other.x;
         this.y -= other.y;
+        return this;
     }
 
     /**
@@ -63,6 +65,7 @@ class Vector2{
     scale(scalar){
         this.x *= scalar;
         this.y *= scalar;
+        return this;
     }
 
     /**

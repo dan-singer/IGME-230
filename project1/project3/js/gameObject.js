@@ -41,6 +41,9 @@ class GameObject extends PIXI.Container{
         this.addChild(sprite);
     }
 
+    attachMotor(){
+        this.motor = new Motor(this);
+    }
 
     /**
      * Set the sprite named name to be active (make it visible!)
@@ -64,7 +67,10 @@ class GameObject extends PIXI.Container{
     /**
      * Called each frame. Override this in subclasses.
      */
-    update(){ }
+    update(){
+        if (this.motor)
+            this.motor.applyForce(new Vector2(0,9.8*2));
+    }
 }
 
 
@@ -75,14 +81,12 @@ class Motor{
 
     constructor(gameObject){
         this.gameObject = gameObject;
+        //Note this is not the same as the gameObject's position!
+        this.position = new Vector2(0,0);
         this.velocity = new Vector2(0,0);
         this.acceleration = new Vector2(0,0);
         this.mass = 1;
         gameObject.app.ticker.add(()=>this.update());
-    }
-
-    get posVector(){
-        return new Vector2(this.position.x, this.position.y);
     }
 
     applyForce(force){
@@ -92,8 +96,8 @@ class Motor{
     update(){
         let dt = 1 / this.gameObject.app.ticker.FPS;
         this.velocity.add(Vector2.scale(this.acceleration, dt));
-        let tempPos = this.posVector.add(Vector2.scale(this.velocity, dt));
-        this.position.x = tempPos.x; this.position.y = tempPos.y;
+        this.position.add(Vector2.scale(this.velocity, dt));
+        this.gameObject.position.x = this.position.x; this.gameObject.position.y = this.position.y;
         this.acceleration.clear();
     }
 }

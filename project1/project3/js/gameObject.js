@@ -32,6 +32,12 @@ class GameObject extends PIXI.Container{
             return Math.max(this.activeSprite.width, this.activeSprite.height) / 2;
     }
 
+    get forward(){
+        let temp = new Vector2(1,0).rotate(-this.rotation);
+        temp.y *= -1;
+        return temp;
+    }
+
     /**
      * Add a sprite to the GameObject's list of potential sprites. Note this will not display the Sprite if there is already an active one.
      * @param {String} name name of the sprite, or path to sprite if second argument not supplied

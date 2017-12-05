@@ -3,7 +3,7 @@
 
 const gameManager = {
     app: null,
-
+    camera: null,
     /**
      * Called when window has loaded.
      */
@@ -22,13 +22,15 @@ const gameManager = {
 
     assetsLoaded(){
         let resources = PIXI.loader.resources;
-        let go = new GameObject("player", this.app);
-        go.addSprite("media/player.png");
-        this.app.stage.addChild(go);
 
-
+        let player = new Player("player", this.app);
+        player.addSprite("media/player.png");
+        player.position = {x: this.app.screen.width/2, y: this.app.screen.height/2};
         let mainScene = new PIXI.Container();
-        
+        mainScene.addChild(player);
+
+        this.app.stage.addChild(player);
+        //this.camera = new FollowCam(this.app.stage, this.app, player);
 
     }
 

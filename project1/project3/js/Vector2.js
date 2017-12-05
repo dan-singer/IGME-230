@@ -34,6 +34,7 @@ class Vector2{
      */
     get normalized(){
         let mag = this.magnitude;
+        if (mag == 0) return new Vector2(0,0);
         let normalizedVec = new Vector2(this.x/mag, this.y/mag);
         return normalizedVec;
     }
@@ -94,6 +95,7 @@ class Vector2{
         let newX = this.x * Math.cos(radians) - this.y * Math.sin(radians);
         let newY = this.x * Math.sin(radians) + this.y * Math.cos(radians);
         this.x = newX; this.y = newY;
+        return this;
     }
 
     /**
@@ -111,6 +113,13 @@ class Vector2{
     }
     static scale(a, scalar){
         return new Vector2(a.x * scalar, a.y * scalar);
+    }
+    static rotate(a, radians){
+        let temp = new Vector2(a.x, a.y);
+        return temp.rotate(radians);
+    }
+    static lerp(a, b, t){
+        return this.add(a, this.subtract(b,a).scale(t)); // a + t(b-a)
     }
 
 }

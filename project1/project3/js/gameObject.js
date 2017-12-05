@@ -16,33 +16,52 @@ class GameObject extends PIXI.Container{
         this.name = name;
         this.sprites = new Map();
         this.activeSprite = null;
+        
+        //Components
         this.motor = null;
+        this.collider = null;
+    }
+
+    get posVector(){
+        return new Vector2(this.position.x, this.position.y);
+    }
+    get radius(){
+        if (!this.activeSprite)
+            return 0;
+        else
+            return Math.max(this.activeSprite.width, this.activeSprite.height) / 2;
     }
 
     /**
-     * Add a sprite to the GameObject's list of potential sprites. Note this will not display the Sprite.
-     * @param {String} name 
+     * Add a sprite to the GameObject's list of potential sprites. Note this will not display the Sprite if there is already an active one.
+     * @param {String} name name of the sprite, or path to sprite if second argument not supplied
      * @param {PIXI.Sprite} sprite 
      */
-    addSprite(name, sprite){
-        sprite.visible = false;
+    addSprite(name, sprite=null){
+
+        if (sprite == null)
+            sprite = new PIXI.Sprite(PIXI.loader.resources[name].texture); 
+        sprite.anchor.set(0.5,0.5);
+        if (!this.activeSprite){
+            sprite.visible = true;
+            this.activeSprite = sprite;
+        }
+        else{
+            sprite.visible = false;            
+        }
         this.sprites.set(name, sprite);        
         this.addChild(sprite);
     }
 
     /**
-     * Add a sprite to the GameObject's list of potential sprites. Only valid for Non-animated sprites.
-     * @param {String} path 
+     * Attach a motor component to this GameObject so physics behaviors can be applied. 
      */
-    addSprite(path){
-        let sprite = new PIXI.Sprite(PIXI.loader.resources[path].texture); 
-        sprite.visible = false;
-        this.sprites.set(path, sprite);
-        this.addChild(sprite);
-    }
-
     attachMotor(){
         this.motor = new Motor(this);
+    }
+
+    attachCollider(){
+        this.collider = new CircleCollider(this, this.radius);
     }
 
     /**
@@ -64,21 +83,28 @@ class GameObject extends PIXI.Container{
         this.sprites.get(name).play();
     }
 
+    /*Abstract Collision methods. You must attach a collider for these to be called*/
+    onCollisionBegin(other){ }
+    onCollision(other){ }
+    onCollisionEnded(other){ }
+
     /**
      * Called each frame. Override this in subclasses.
      */
-    update(){
-        if (this.motor)
-            this.motor.applyForce(new Vector2(0,9.8*2));
-    }
+    update(){}
 }
 
 
 /**
  * Component class responsible for applying simple physics to gameObjects
+ * @author Dan Singer
  */
 class Motor{
 
+    /**
+     * Construct a new motor for the GameObject
+     * @param {GameObject} gameObject 
+     */
     constructor(gameObject){
         this.gameObject = gameObject;
         //Note this is not the same as the gameObject's position!
@@ -86,14 +112,27 @@ class Motor{
         this.velocity = new Vector2(0,0);
         this.acceleration = new Vector2(0,0);
         this.mass = 1;
-        gameObject.app.ticker.add(()=>this.update());
+        this.gameObject.app.ticker.add(()=>this.update());
     }
 
+    /**
+     * Apply a force this frame to the GameObject
+     * @param {Vector2} force 
+     */
     applyForce(force){
         this.acceleration.add(force.scale(1/this.mass));
     }
 
+    syncPosition(){
+        this.position.x = this.gameObject.position.x; 
+        this.position.y = this.gameObject.position.y;        
+    }
+
+    /**
+     * Called each frame to update velocity and position, and reset acceleration after each frame
+     */
     update(){
+        this.syncPosition();
         let dt = 1 / this.gameObject.app.ticker.FPS;
         this.velocity.add(Vector2.scale(this.acceleration, dt));
         this.position.add(Vector2.scale(this.velocity, dt));

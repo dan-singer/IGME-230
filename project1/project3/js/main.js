@@ -1,31 +1,43 @@
 "use strict";
 
-window.onload = windowLoaded;
-let app;
 
-/**
- * Called when window has loaded.
- */
-function windowLoaded(){
+const gameManager = {
+    app: null,
 
-    let gameContainer = document.querySelector("#game");
-    app = new PIXI.Application(gameContainer.clientWidth, gameContainer.clientHeight);
-    gameContainer.appendChild(app.view);
+    /**
+     * Called when window has loaded.
+     */
+    windowLoaded(){
+        
+        let gameContainer = document.querySelector("#game");
+        this.app = new PIXI.Application(gameContainer.clientWidth, gameContainer.clientHeight);
+        gameContainer.appendChild(this.app.view);
 
-    PIXI.loader.add(
-        ["media/player0.png", "media/player1.png"]
-    ).load(onAssetsLoaded);
-}
+        PIXI.loader
+            .add("media/player.png")
+            .load(()=>{
+                this.assetsLoaded();
+            });
+    },
+
+    assetsLoaded(){
+        let resources = PIXI.loader.resources;
+        let go = new GameObject("player", this.app);
+        go.addSprite("media/player.png");
+        this.app.stage.addChild(go);
 
 
-let go;
-function onAssetsLoaded(){
+        let mainScene = new PIXI.Container();
+        
 
-    //Testing
-    go = new GameObject("Player", app);
-    go.addSprite("media/player0.png");
-    go.setActiveSprite("media/player0.png");
-    app.stage.addChild(go);
-    go.addSprite("media/player1.png");
-    go.setActiveSprite("media/player1.png");
-}
+    }
+
+
+
+
+};
+
+//Use arrow function to avoid wrong this being referenced in window callback
+window.onload = ()=>{
+    gameManager.windowLoaded();
+};

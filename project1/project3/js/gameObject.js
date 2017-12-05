@@ -29,11 +29,13 @@ class GameObject extends PIXI.Container{
         if (!this.activeSprite)
             return 0;
         else
-            return Math.max(this.activeSprite.width, this.activeSprite.height) / 2;
+            return Math.max(this.width, this.height) / 2;
     }
 
     get forward(){
+        //PIXI considers rotations clockwise, so we need to adjust for this.
         let temp = new Vector2(1,0).rotate(-this.rotation);
+        //Also, reflect y axis so up is down and down is up.
         temp.y *= -1;
         return temp;
     }
@@ -67,7 +69,7 @@ class GameObject extends PIXI.Container{
     }
 
     attachCollider(){
-        this.collider = new CircleCollider(this, this.radius);
+        this.collider = new CircleCollider(this);
     }
 
     /**
@@ -92,7 +94,7 @@ class GameObject extends PIXI.Container{
     /*Abstract Collision methods. You must attach a collider for these to be called*/
     onCollisionBegin(other){ }
     onCollision(other){ }
-    onCollisionEnded(other){ }
+    onCollisionEnd(other){ }
 
     /**
      * Called each frame. Override this in subclasses.
@@ -128,6 +130,7 @@ class Motor{
     applyForce(force){
         this.acceleration.add(force.scale(1/this.mass));
     }
+    
 
     syncPosition(){
         this.position.x = this.gameObject.position.x; 

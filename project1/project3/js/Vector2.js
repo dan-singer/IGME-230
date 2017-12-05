@@ -35,6 +35,7 @@ class Vector2{
     get normalized(){
         let mag = this.magnitude;
         if (mag == 0) return new Vector2(0,0);
+        
         let normalizedVec = new Vector2(this.x/mag, this.y/mag);
         return normalizedVec;
     }

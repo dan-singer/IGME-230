@@ -1,6 +1,7 @@
 /**
  * Singleton CollisionManager object which cycles through each object registered with it,
  * and notifies them if they collided with each other using their definition of collision check.
+ * NOTE: Collisions will not be checked unless the update method is called each frame!
  * @author Dan Singer
  */
 const CollisionManager = {
@@ -30,11 +31,12 @@ const CollisionManager = {
                     colliderA.gameObject.onCollision(colliderB);
                     colliderB.gameObject.onCollision(colliderA);
                 }
+                
                 else{
                     if (this.collMap.has(colliderA) && this.collMap.get(colliderA).includes(colliderB))
                     {
-                        colliderA.gameObject.onCollisionEnded(colliderB);
-                        colliderB.gameObject.onCollisionEnded(colliderA);
+                        colliderA.gameObject.onCollisionEnd(colliderB);
+                        colliderB.gameObject.onCollisionEnd(colliderA);
                         let collisions = this.collMap.get(colliderA);
                         collisions.splice(collisions.indexOf(colliderB), 1);                        
                     }
@@ -55,11 +57,9 @@ class CircleCollider{
     /**
      * Construct a new Circle Collider attached to a gameObject
      * @param {GameObject} gameObject 
-     * @param {Number} radius 
      */
-    constructor(gameObject, radius){ 
+    constructor(gameObject){ 
         this.gameObject = gameObject;
-        this.radius = radius;
         CollisionManager.register(this);
     }
 
@@ -69,8 +69,9 @@ class CircleCollider{
      * @returns {Boolean}
      */
     collidingWith(other){
+        let thisRadius = this.gameObject.radius;
         let connectingLine = Vector2.subtract(other.gameObject.posVector, this.gameObject.posVector);
-        let radSum = this.radius + other.radius;
+        let radSum = thisRadius + other.gameObject.radius;
         return (connectingLine.sqrMagnitude < Math.pow(radSum, 2));
     }
 }

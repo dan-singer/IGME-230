@@ -8,8 +8,8 @@ class Player extends GameObject{
         this.attachMotor();
         this.attachCollider();
 
-        this.thrustMagnitude = 200;
-        this.radiansPerSecond = 1;
+        this.thrustMagnitude = 250;
+        this.radiansPerSecond = 1.5;
 
         this.keyMapping = {
             "ArrowLeft": "left",
@@ -18,8 +18,6 @@ class Player extends GameObject{
             "d": "right",
             "ArrowUp": "up",
             "w": "up",
-            "ArrowDown": "down",
-            "d": "down"
         };
 
         this.keysDown = new Set();
@@ -37,6 +35,13 @@ class Player extends GameObject{
                 this.keysDown.delete(this.keyMapping[e.key]);
             }
         }
+    }
+
+    onCollisionBegin(){
+        this.setActiveSprite("media/player-hit.png");
+    }
+    onCollisionEnd(){
+        this.setActiveSprite("media/player.png");
     }
 
     update(){

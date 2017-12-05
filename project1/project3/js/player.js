@@ -10,6 +10,7 @@ class Player extends GameObject{
 
         this.thrustMagnitude = 250;
         this.radiansPerSecond = 1.5;
+        this.health = 3;
 
         this.keyMapping = {
             "ArrowLeft": "left",
@@ -42,6 +43,10 @@ class Player extends GameObject{
     }
     onCollisionEnd(){
         this.setActiveSprite("media/player.png");
+    }
+
+    adjustHealth(amount){
+        this.health += amount;
     }
 
     update(){

@@ -54,12 +54,7 @@ class Player extends GameObject{
         let dt = 1 / this.app.ticker.FPS;
 
         //Apply drag
-        let airDensity = 0.3;
-        let drag = 0.14;
-        let area = this.width * this.height / 8000;
-        let airResistanceMag = airDensity * drag * area * this.motor.velocity.sqrMagnitude / 2;
-        this.motor.applyForce(this.motor.velocity.normalized.scale(-airResistanceMag));
-
+        this.motor.applyDrag(gameManager.dragSettings);
 
         //Thrust
         if (this.keysDown.has("up")){

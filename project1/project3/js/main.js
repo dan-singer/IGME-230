@@ -4,6 +4,11 @@
 const gameManager = {
     app: null,
     camera: null,
+    dragSettings: {
+        airDensity: 0.3,
+        drag: .14,
+        areaDivisor: 8000
+    },
     /**
      * Called when window has loaded.
      */

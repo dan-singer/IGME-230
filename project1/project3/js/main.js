@@ -36,8 +36,8 @@ const gameManager = {
         let player = new Player("player", this.app);
         player.position = {x: this.app.screen.width/2, y: this.app.screen.height/2};
 
-        let enemy = new Enemy("enemy", this.app, player);
-        enemy.addSprite("media/enemy.png");
+        let enemy = new SeekEnemy("enemy", this.app, player);
+        enemy.position = {x: this.app.screen.width, y: this.app.screen.height/2};
 
         let mainScene = new PIXI.Container();
         mainScene.addChild(player);
@@ -45,7 +45,7 @@ const gameManager = {
         
 
         this.app.stage.addChild(mainScene);
-        //this.camera = new FollowCam(this.app.stage, this.app, player);
+        this.camera = new FollowCam(this.app.stage, this.app, player);
 
     }
 

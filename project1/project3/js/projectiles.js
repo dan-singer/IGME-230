@@ -55,4 +55,14 @@ class EnemyBullet extends Bullet{
         super(name, app, source, direction, launchForceMagnitude);
         this.addSprite("media/bullet.png");
     }
+
+    onCollisionBegin(other){
+        //Enemy bullet should damage the player
+        if (other.gameObject instanceof Player){
+            other.gameObject.adjustHealth(-this.strength);
+            Motor.resolveElasticCollision(this.motor, other.gameObject.motor);
+        }
+        if (!(other.gameObject instanceof Player))
+            super.onCollisionBegin(other);
+    }
 }

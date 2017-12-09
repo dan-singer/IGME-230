@@ -38,16 +38,17 @@ class Enemy extends Vehicle{
         this.motor.mass = 4; 
         //In milliseconds
         this.cooldownDuration = 1000;
-        this.seeking = true;
+        this.seeking = false;
     }
 
     onCollisionBegin(other){
         if (other.gameObject instanceof Player){
             other.gameObject.adjustHealth(this.strength);
             Motor.resolveElasticCollision(this.motor, other.gameObject.motor);   
+
             //Stop seeking for a second to give player a change to escape
             this.seeking = false;
-            setTimeout(()=>this.seeking=true, this.cooldownDuration);
+            setTimeout(()=>this.seeking=previousSeekValue, this.cooldownDuration);
         }
     }
 
@@ -60,11 +61,18 @@ class Enemy extends Vehicle{
 
     update(){
         this.motor.applyDrag(gameManager.dragSettings);
-        if (this.seeking)
-        {
-            this.motor.applyForce(
-                this.seek(this.player.posVector)
-            );
+        if (this.seeking){
+            this.motor.applyForce(this.seek(this.player));
         }
     }
+}
+
+class SeekEnemy extends Enemy{
+    constructor(name, app, player){
+        super(name, app, player);
+        this.seeking = true;
+        this.addSprite("media/enemy.png");
+    }
+
+
 }

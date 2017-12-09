@@ -5,14 +5,14 @@
 class Vehicle extends GameObject{
     constructor(name, app){
         super(name, app);
-        this.maxSpeed = 500;
+        this.maxSpeed = 600;
         this.attachMotor();
         this.attachCollider();
     }
 
     seek(target){
         let desired = Vector2.subtract(target, this.posVector); 
-        desired.normalized.scale(this.maxSpeed);
+        desired.normalize().scale(this.maxSpeed);
         let steerForce = Vector2.subtract(desired, this.motor.velocity);
         return steerForce;
     }
@@ -33,21 +33,38 @@ class Enemy extends Vehicle{
     constructor(name, app, player){
         super(name, app);
         this.player = player;
+        this.health = 3;
         this.strength = 1;
-        this.motor.mass = 4;
+        this.motor.mass = 4; 
+        //In milliseconds
+        this.cooldownDuration = 1000;
+        this.seeking = true;
     }
 
     onCollisionBegin(other){
         if (other.gameObject instanceof Player){
             other.gameObject.adjustHealth(this.strength);
             Motor.resolveElasticCollision(this.motor, other.gameObject.motor);   
+            //Stop seeking for a second to give player a change to escape
+            this.seeking = false;
+            setTimeout(()=>this.seeking=true, this.cooldownDuration);
+        }
+    }
+
+    decrementHealth(amount){
+        this.health -= amount;
+        if (this.health <= 0){
+            this.destroy();
         }
     }
 
     update(){
         this.motor.applyDrag(gameManager.dragSettings);
-        this.motor.applyForce(
-            this.seek(this.player.posVector)
-        );
+        if (this.seeking)
+        {
+            this.motor.applyForce(
+                this.seek(this.player.posVector)
+            );
+        }
     }
 }

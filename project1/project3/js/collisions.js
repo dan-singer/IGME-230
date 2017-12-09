@@ -10,6 +10,20 @@ const CollisionManager = {
     register(collider){
       this.colliders.push(collider);  
     },
+    unregister(collider){
+        this.colliders.splice(this.colliders.indexOf(collider), 1);
+
+        //Remove all traces of this collider
+        if (this.collMap.has(collider))
+            this.collMap.delete(collider);
+        for (let key of this.collMap.keys()){
+            if (this.collMap.get(key).includes(collider))
+            {
+                let arr = this.collMap.get(key);
+                arr.splice(arr.indexOf(collider), 1);
+            }
+        }
+    },
     update(){
         for (let i=0; i<this.colliders.length-1; i++){
             let colliderA = this.colliders[i];

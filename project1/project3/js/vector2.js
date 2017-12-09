@@ -77,6 +77,7 @@ class Vector2{
         let mag = this.magnitude;
         this.x /= mag;
         this.y /= mag;
+        return this;
     }
 
     /**

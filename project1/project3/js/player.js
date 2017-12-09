@@ -13,6 +13,10 @@ class Player extends GameObject{
         this.health = 3;
         this.wasFiring = false;
 
+        //Attach sprites
+        this.addSprite("media/player.png");
+        this.addSprite("media/player-hit.png");
+
         this.keyMapping = {
             "ArrowLeft": "left",
             "a": "left",
@@ -79,8 +83,7 @@ class Player extends GameObject{
         //Fire
         if (this.keysDown.has("fire") && !this.wasFiring){
             //Spawn a bullet
-            let bullet = new Bullet("b", this.app, this, this.forward, this.thrustMagnitude * 10);
-            bullet.addSprite("media/bullet.png");
+            let bullet = new PlayerBullet("b", this.app, this, this.forward, this.thrustMagnitude * 100);
             this.parent.addChild(bullet);
         }
         

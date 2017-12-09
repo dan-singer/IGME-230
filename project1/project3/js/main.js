@@ -34,8 +34,6 @@ const gameManager = {
         this.app.ticker.add(()=>{CollisionManager.update()});
 
         let player = new Player("player", this.app);
-        player.addSprite("media/player.png");
-        player.addSprite("media/player-hit.png");
         player.position = {x: this.app.screen.width/2, y: this.app.screen.height/2};
 
         let enemy = new Enemy("enemy", this.app, player);

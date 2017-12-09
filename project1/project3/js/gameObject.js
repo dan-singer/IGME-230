@@ -71,6 +71,7 @@ class GameObject extends PIXI.Container{
         this.addChild(sprite);
     }
 
+
     /**
      * Attach a motor component to this GameObject so physics behaviors can be applied. 
      */
@@ -110,6 +111,14 @@ class GameObject extends PIXI.Container{
      * Called each frame. Override this in subclasses.
      */
     update(){}
+
+
+    destroy(){
+        if (this.collider){
+            CollisionManager.unregister(this.collider);
+        }
+        this.parent.removeChild(this);
+    }
 }
 
 

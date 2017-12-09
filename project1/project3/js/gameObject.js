@@ -41,6 +41,16 @@ class GameObject extends PIXI.Container{
     }
 
     /**
+     * Set the forward of this gameObject by rotating in the direction of the unit vector
+     * @param {Vector2} direction
+     */
+    set forward(direction){
+        //Note that we don't have to account for y being backwards because rotation is clockwise 
+        let angle = Math.atan2(direction.y, direction.x);
+        this.rotation = angle;
+    }
+
+    /**
      * Add a sprite to the GameObject's list of potential sprites. Note this will not display the Sprite if there is already an active one.
      * @param {String} name name of the sprite, or path to sprite if second argument not supplied
      * @param {PIXI.Sprite} sprite 
@@ -91,7 +101,7 @@ class GameObject extends PIXI.Container{
         this.sprites.get(name).play();
     }
 
-    /*Abstract Collision methods. You must attach a collider for these to be called*/
+    /*Abstract Collision methods. You must attach a collider for these to be called. Other is a Collider.*/
     onCollisionBegin(other){ }
     onCollision(other){ }
     onCollisionEnd(other){ }

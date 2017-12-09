@@ -22,6 +22,7 @@ const gameManager = {
             .add("media/player.png")
             .add("media/player-hit.png")
             .add("media/enemy.png")
+            .add("media/bullet.png")
             .load(()=>{
                 this.assetsLoaded();
             });
@@ -43,6 +44,7 @@ const gameManager = {
         let mainScene = new PIXI.Container();
         mainScene.addChild(player);
         mainScene.addChild(enemy);
+        
 
         this.app.stage.addChild(mainScene);
         //this.camera = new FollowCam(this.app.stage, this.app, player);

@@ -11,6 +11,7 @@ class Player extends GameObject{
         this.thrustMagnitude = 250;
         this.radiansPerSecond = 1.5;
         this.health = 3;
+        this.wasFiring = false;
 
         this.keyMapping = {
             "ArrowLeft": "left",
@@ -19,6 +20,7 @@ class Player extends GameObject{
             "d": "right",
             "ArrowUp": "up",
             "w": "up",
+            " ": "fire" //space
         };
 
         this.keysDown = new Set();
@@ -36,13 +38,17 @@ class Player extends GameObject{
                 this.keysDown.delete(this.keyMapping[e.key]);
             }
         }
+
+        //Mouse Event handlers
+        document.onmousedown = (e) => {this.keysDown.add("fire")};
+        document.onmouseup = (e) => {this.keysDown.delete("fire")};
     }
 
-    onCollisionBegin(){
-        this.setActiveSprite("media/player-hit.png");
+    onCollisionBegin(other){
+
     }
-    onCollisionEnd(){
-        this.setActiveSprite("media/player.png");
+    onCollisionEnd(other){
+
     }
 
     adjustHealth(amount){
@@ -69,6 +75,17 @@ class Player extends GameObject{
         if (this.keysDown.has("right")){
             this.rotation += this.radiansPerSecond * dt;            
         }
+
+        //Fire
+        if (this.keysDown.has("fire") && !this.wasFiring){
+            //Spawn a bullet
+            let bullet = new Bullet("b", this.app, this, this.forward, this.thrustMagnitude * 10);
+            bullet.addSprite("media/bullet.png");
+            this.parent.addChild(bullet);
+        }
+        
+
+        this.wasFiring = this.keysDown.has("fire");
     }
 
 

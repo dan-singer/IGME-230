@@ -56,7 +56,7 @@ class Enemy extends Vehicle{
     constructor(name, app, player, position=null){
         super(name, app, position);
         this.player = player;
-        this.health = 3;
+        this.health = 15;
         this.strength = 1;
         this.motor.mass = 4; 
         //In milliseconds
@@ -88,6 +88,7 @@ class Enemy extends Vehicle{
     decrementHealth(amount){
         this.health -= amount;
         if (this.health <= 0){
+            gameManager.enemyDestroyed();
             this.destroy();
         }
     }
@@ -156,6 +157,12 @@ class Boss extends Enemy{
         this.canUpdate = false;
         this.visible = false;
         CollisionManager.unregister(this.collider);
+    }
+
+    activate(){
+        this.visible = true;
+        this.canUpdate = true;
+        CollisionManager.register(this.collider);
     }
 
     update(){

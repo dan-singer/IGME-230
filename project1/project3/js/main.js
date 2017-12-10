@@ -9,7 +9,7 @@ const gameManager = {
         drag: .14,
         areaDivisor: 8000
     },
-    pickupsPerCell: {min: 10, max: 20},
+    pickupsPerCell: {min: 5, max: 10},
     scenes: {
         title: null,
         main: null,
@@ -22,6 +22,8 @@ const gameManager = {
     player: null,
     score: 0,
     cellSize: null,
+    enemiesDestroyed: 0,
+    regularEnemyQuanity: 4,
     /**
      * Called when window has loaded.
      */
@@ -34,12 +36,11 @@ const gameManager = {
         this.bounds = new PIXI.Rectangle(-this.cellSize.x, -this.cellSize.y, this.cellSize.x * 3, this.cellSize.y * 3);
 
         PIXI.loader
-            .add("media/player.png")
-            .add("media/player-hit.png")
-            .add("media/enemy.png")
-            .add("media/bullet.png")
-            .add("media/pickup-health.png")
-            .add("media/pickup-score.png")
+            .add([
+                "media/player.json",
+                "media/enemy.json",
+                "media/misc.json"
+            ])
             .load(()=>{
                 this.assetsLoaded();
             });
@@ -124,6 +125,18 @@ const gameManager = {
                 scene.addChild(pickup);
             }
         });
+    },
+
+    enemyDestroyed(){
+        this.enemiesDestroyed++;
+        if (this.enemiesDestroyed == this.regularEnemyQuanity)
+        {
+            this.enemies[this.enemies.length-1].activate();
+        }
+    },
+
+    playerDied(){
+        //TODO show message
     }
 };
 

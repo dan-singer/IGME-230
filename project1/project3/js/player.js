@@ -10,12 +10,11 @@ class Player extends GameObject{
 
         this.thrustMagnitude = 250;
         this.radiansPerSecond = 1.5;
-        this.health = 3;
+        this.health = 6;
         this.wasFiring = false;
 
         //Attach sprites
-        this.addSprite("media/player.png");
-        this.addSprite("media/player-hit.png");
+        
 
         this.keyMapping = {
             "ArrowLeft": "left",
@@ -57,6 +56,10 @@ class Player extends GameObject{
 
     adjustHealth(amount){
         this.health += amount;
+        if (this.health <= 0){
+            gameManager.playerDied();
+            this.destroy();
+        }
     }
 
     update(){

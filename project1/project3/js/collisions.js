@@ -60,22 +60,44 @@ const CollisionManager = {
     }
 };
 
-
-
-/**
- * Simple circle collider
- * @author Dan Singer
- */
-class CircleCollider{
-
+class Collider{
     /**
-     * Construct a new Circle Collider attached to a gameObject
+     * Construct a new Collider attached to a gameObject
      * @param {GameObject} gameObject 
      */
     constructor(gameObject){ 
         this.gameObject = gameObject;
         CollisionManager.register(this);
     }
+
+    collidingWith(other) { }
+
+    /**
+     * Perform an Axis-Aligned Bounding Box Collision test between the two rectangles.
+     * @param {PIXI.Rectangle} A 
+     * @param {PIXI.Rectangle} B 
+     * @return {Boolean}
+     */
+    static AABB(A, B){
+        let Ainfo = {
+            min: new Vector2(A.x, A.y),
+            max: new Vector2(A.x + A.width, A.y + A.height )
+        };
+        let Binfo = {
+            min: new Vector2(B.x, B.y),
+            max: new Vector2(B.x + B.width, B.y + B.height )
+        };
+        
+        let test = Ainfo.min.x < Binfo.max.x && Ainfo.max.x > Binfo.min.x && Ainfo.min.y < Binfo.max.y && Ainfo.max.y > Binfo.min.y;
+        return test;
+    }
+}
+
+/**
+ * Simple circle collider
+ * @author Dan Singer
+ */
+class CircleCollider extends Collider{
 
     /**
      * Check if there is a collision between this collider and the other one

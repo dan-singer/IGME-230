@@ -40,6 +40,10 @@ class GameObject extends PIXI.Container{
             return Math.max(this.width, this.height) / 2;
     }
 
+    get rect(){
+        return new PIXI.Rectangle(this.position.x - this.width/2, this.position.y - this.height/2, this.width, this.height);
+    }
+
     get forward(){
         //PIXI considers rotations clockwise, so we need to adjust for this.
         let temp = new Vector2(1,0).rotate(-this.rotation);

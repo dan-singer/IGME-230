@@ -35,16 +35,7 @@ class Vehicle extends GameObject{
     }
 
     constrain(rectangle){
-        let w2 = this.width/2;
-        let h2 = this.height/2;
-        let extents = new Vector2(w2, -h2);
-        let min = Vector2.subtract(this.posVector, extents);
-        let max = Vector2.add(this.posVector, extents);
-
-        let rMax = new Vector2(rectangle.x + rectangle.width, rectangle.y + rectangle.height);
-        let rMin = new Vector2(rectangle.x, rectangle.y);
-
-        let test = min.x < rMax.x && max.x > rMin.x && min.y < rMax.y && max.y > rMin.y;
+        let test = Collider.AABB(this.rect, rectangle);
         if (!test)
         {
             let center = new Vector2(rectangle.x + rectangle.width/2, rectangle.y + rectangle.height/2);
@@ -83,7 +74,7 @@ class Enemy extends Vehicle{
     }
 
     onCollisionBegin(other){
-        if (other.gameObject instanceof Player){
+        if (other.gameObject instanceof Player && this.canUpdate){
             other.gameObject.adjustHealth(this.strength);
             Motor.resolveElasticCollision(this.motor, other.gameObject.motor);   
 
@@ -120,8 +111,6 @@ class Enemy extends Vehicle{
         this.canUpdate = gameManager.camera.rect.contains(this.position.x, this.position.y);
         if (!this.canUpdate)
             this.motor.stop();
-
-
     }
 }
 
@@ -135,20 +124,6 @@ class SeekEnemy extends Enemy{
         super.update();
         if (this.stunned || !this.canUpdate) return;
         this.motor.applyForce(this.seek(this.player));   
-    }
-}
-
-class SeekFireEnemy extends Enemy{
-    constructor(name, app, player, position=null){
-        super(name, app, player, position);
-        this.addSprite("media/enemy.png");        
-    }
-
-    update(){
-        super.update();
-        if (this.stunned || !this.canUpdate) return;
-        this.motor.applyForce(this.seek(this.player));   
-        this.fire(this.forward);
     }
 }
 
@@ -173,3 +148,24 @@ class WanderFireEnemy extends Enemy{
 
     }
 }
+
+class Boss extends Enemy{
+    constructor(name, app, player, position=null){
+        super(name, app, player, position);
+        this.addSprite("media/enemy.png");        
+        this.canUpdate = false;
+        this.visible = false;
+        CollisionManager.unregister(this.collider);
+    }
+
+    update(){
+        //We're not going to use parent's update here.
+        if (this.stunned || !this.canUpdate) return;
+        this.motor.applyDrag(gameManager.dragSettings);
+        this.forward = this.motor.velocity.normalized;
+
+        this.motor.applyForce(this.seek(this.player));   
+        this.fire(this.forward);
+    }
+}
+

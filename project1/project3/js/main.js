@@ -1,6 +1,6 @@
 "use strict";
 
-
+let enemy;
 const gameManager = {
     app: null,
     camera: null,
@@ -9,6 +9,7 @@ const gameManager = {
         drag: .14,
         areaDivisor: 8000
     },
+    score: 0,
     /**
      * Called when window has loaded.
      */
@@ -36,9 +37,7 @@ const gameManager = {
         let player = new Player("player", this.app);
         player.position = {x: this.app.screen.width/2, y: this.app.screen.height/2};
 
-        let enemy = new SeekEnemy("enemy", this.app, player);
-        enemy.position = {x: this.app.screen.width, y: this.app.screen.height/2};
-
+        enemy = new WanderFireEnemy("enemy", this.app, player, {x: this.app.screen.width, y: this.app.screen.height/2});
         let mainScene = new PIXI.Container();
         mainScene.addChild(player);
         mainScene.addChild(enemy);

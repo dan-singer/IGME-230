@@ -3,8 +3,8 @@
  * @author Dan Singer
  */
 class Player extends GameObject{
-    constructor(name, app){
-        super(name, app);
+    constructor(name, app, position=null){
+        super(name, app, position);
         this.attachMotor();
         this.attachCollider();
 
@@ -83,7 +83,7 @@ class Player extends GameObject{
         //Fire
         if (this.keysDown.has("fire") && !this.wasFiring){
             //Spawn a bullet
-            let bullet = new PlayerBullet("b", this.app, this, this.forward, this.thrustMagnitude * 100);
+            let bullet = new PlayerBullet("b", this.app, this, this.forward);
             this.parent.addChild(bullet);
         }
         

@@ -24,6 +24,11 @@ class Camera{
         this.container.scale = new Vector2(newZoom, newZoom);
     }
 
+    get rect(){
+        let pos = this.position;
+        return new PIXI.Rectangle(pos.x, pos.y, this.app.screen.width, this.app.screen.height);
+    }
+
     update(){ }
 }
 

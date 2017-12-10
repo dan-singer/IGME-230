@@ -8,14 +8,22 @@ class GameObject extends PIXI.Container{
      * Create a new GameObject
      * @param {String} name 
      */
-    constructor(name, app){
+    constructor(name, app, position=null){
         super();
-        //Note use of arrow function so this can be used in update method
-        app.ticker.add(()=>this.update());
+        //Note use of arrow function so this can be used in update method.
+        //Also note we store a reference to this method so we can remove it from ticker later if this is destroyed.
+        this.updateRef = ()=>this.update(); 
+        app.ticker.add(this.updateRef);
         this.app = app;
         this.name = name;
         this.sprites = new Map();
         this.activeSprite = null;
+        this.canUpdate = true;
+
+        if (position)
+        {
+            this.position = position;
+        }
         
         //Components
         this.motor = null;
@@ -117,6 +125,7 @@ class GameObject extends PIXI.Container{
         if (this.collider){
             CollisionManager.unregister(this.collider);
         }
+        this.app.ticker.remove(this.updateRef);        
         this.parent.removeChild(this);
     }
 }
@@ -181,6 +190,11 @@ class Motor{
         let area = this.gameObject.width * this.gameObject.height / 8000;
         let airResistanceMag = airDensity * drag * area * this.velocity.sqrMagnitude / 2;
         this.applyForce(this.velocity.normalized.scale(-airResistanceMag));
+    }
+
+    stop(){
+        this.velocity.clear();
+        this.acceleration.clear();
     }
     
 

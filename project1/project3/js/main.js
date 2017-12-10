@@ -18,7 +18,6 @@ const gameManager = {
     },
     pickups: [],
     enemies: [], 
-    boundaries: [], 
     bounds : null,
     player: null,
     score: 0,
@@ -125,18 +124,6 @@ const gameManager = {
                 scene.addChild(pickup);
             }
         });
-    },
-
-    spawnBoundaries(scene){
-        let bWid = 1;
-        this.boundaries = [
-            new Boundary("boundary-left", this.app, new PIXI.Rectangle(-this.cellSize.x-bWid, -this.cellSize.y, bWid, this.cellSize.y * 3)),
-            new Boundary("boundary-right", this.app, new PIXI.Rectangle(this.cellSize.x*2, -this.cellSize.y, bWid, this.cellSize.y * 3)),
-            new Boundary("boundary-top", this.app, new PIXI.Rectangle(-this.cellSize.x, -this.cellSize.y-bWid, this.cellSize.x * 3, bWid)),
-            new Boundary("boundary-bottom", this.app, new PIXI.Rectangle(-this.cellSize.x, this.cellSize.y*2, this.cellSize.x * 3, bWid))
-        ];
-        
-        this.boundaries.forEach((boundary) => scene.addChild(boundary));
     }
 };
 
@@ -144,26 +131,3 @@ const gameManager = {
 window.onload = ()=>{
     gameManager.windowLoaded();
 };
-
-
-
-
-class Boundary extends GameObject{
-    constructor(name, app, rect){
-        super(name, app);
-        this.x = rect.x; this.y = rect.y;
-        this.width = rect.width; this.height = rect.height;
-
-        this.attachMotor();
-        this.motor.mass = 10;
-        this.attachCollider();
-    }
-
-    onCollisionBegin(other){
-        Motor.resolveElasticCollision(this.motor, other.gameObject.motor);
-    }
-
-    update(){
-        this.motor.stop();
-    }
-}

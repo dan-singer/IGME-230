@@ -60,6 +60,10 @@ const CollisionManager = {
     }
 };
 
+/**
+ * Abstract Collider class. Extend to make a specific collider, like a circle or box collider.
+ * @author Dan Singer
+ */
 class Collider{
     /**
      * Construct a new Collider attached to a gameObject
@@ -70,6 +74,10 @@ class Collider{
         CollisionManager.register(this);
     }
 
+    /**
+     * Abstract collision check method
+     * @param {Collider} other 
+     */
     collidingWith(other) { }
 
     /**
@@ -100,7 +108,7 @@ class Collider{
 class CircleCollider extends Collider{
 
     /**
-     * Check if there is a collision between this collider and the other one
+     * Check if there is a collision between this collider and the other one using a circle collision test
      * @param {CircleCollider} other 
      * @returns {Boolean}
      */

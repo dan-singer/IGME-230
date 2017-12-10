@@ -66,6 +66,12 @@ class Player extends GameObject{
         //Apply drag
         this.motor.applyDrag(gameManager.dragSettings);
 
+        //Check if I'm out of bounds
+        if (!Collider.AABB(this.rect, gameManager.bounds)){
+            //We can "fake" an elastic collision by just supplying an object literal with mass and velocity to the Motor method.
+            Motor.resolveElasticCollision(this.motor, {mass: 10, velocity: new Vector2(0,0)});
+        }
+
         //Thrust
         if (this.keysDown.has("up")){
             let force = this.forward.scale(this.thrustMagnitude);

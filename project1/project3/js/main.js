@@ -63,21 +63,37 @@ const gameManager = {
                 this.app.stage.addChild(this.scenes[scene]);
         }
     },
-
+    
+    /**
+     * Generate the title scene
+     * @return {PIXI.Container}
+     */
     generateTitle(){
         let titleScene = new PIXI.Container();
         let title = new Title("Space Voyager");
             title.position = {x: this.app.screen.width/2 - title.width/2, y: this.app.screen.height/2 - title.height/2};
-        let button = new Button("Start", ()=>{
 
+
+        //Here, we chain together faders to implement smooth transitions between instructions
+        let button = new Button("Start", ()=>{
             new Fader(titleScene, this.app).fadeTo(0).then(()=>{
                 new Fader(this.scenes.instructions.children[0], this.app).fadeTo(1).then(()=>{
-                    new Fader(this.scenes.instructions.children[1], this.app).fadeTo(1);
+                    new Fader(this.scenes.instructions.children[1], this.app).fadeTo(1).then(()=>{
+                        new Fader(this.scenes.instructions.children[0], this.app).fadeTo(0);
+                        new Fader(this.scenes.instructions.children[1], this.app).fadeTo(0).then(()=>{
+                            new Fader(this.scenes.instructions.children[2], this.app, 2).fadeTo(1).then(()=>{
+                                new Fader(this.scenes.instructions.children[2], this.app, 2).fadeTo(0).then(()=>{
+                                    titleScene.visible = false;
+                                    this.scenes.main = this.generateLevel();
+                                    this.scenes.main.alpha = 0;
+                                    new Fader(this.scenes.main, this.app).fadeTo(1);
+                                    this.app.stage.addChild(this.scenes.main);
+                                });                                
+                            });
+                        });
+                    });
                 });
             });
-            //titleScene.visible = false;
-            //this.scenes.main = this.generateLevel();
-            //this.app.stage.addChild(this.scenes.main);
         });
         button.position = {x: this.app.screen.width/2 - button.width/2, y: this.app.screen.height - button.height*2};
             
@@ -86,6 +102,10 @@ const gameManager = {
         return titleScene;
     },
 
+    /**
+     * Generate the instructions scene
+     * @return {PIXI.Container}
+     */
     generateInstructions(){
         let container = new PIXI.Container();
         let instr = new Label("WASD/Arrows to move");
@@ -94,11 +114,21 @@ const gameManager = {
         let instr2 = new Label("Left Click/Space to shoot");
             instr2.position = {x:this.app.screen.width/2, y:this.app.screen.height/2};        
             instr2.alpha = 0;
+        let instr3 = new Label("Rid the world of the GL5 creatures");
+            instr3.position = {x:this.app.screen.width/2 - instr3.width/2, y:this.app.screen.height/2 - instr3.height/2};
+            instr3.alpha = 0;        
+            
         container.addChild(instr);
         container.addChild(instr2);
+        container.addChild(instr3);
+        
         return container;
     },
 
+    /**
+     * Generate the win scene
+     * @return {PIXI.Container}
+     */
     generateWin(){
 
         let winScene = new PIXI.Container();
@@ -116,6 +146,10 @@ const gameManager = {
         return winScene;
     },
 
+    /**
+     * Generate the death scene
+     * @return {PIXI.Container}
+     */
     generateDeath(){
         let deathScene = new PIXI.Container();
         
@@ -205,6 +239,10 @@ const gameManager = {
         });
     },
 
+    /**
+     * Draw a rectangle around the world boundaries
+     * @param {PIXI.Container} scene 
+     */
     drawBoundaries(scene){
         let boundRect = new PIXI.Graphics();
         boundRect.beginFill(0,0);
@@ -214,6 +252,9 @@ const gameManager = {
         scene.addChild(boundRect);
     },
 
+    /**
+     * Called when an enemy is destroyed
+     */
     enemyDestroyed(){
         this.enemiesDestroyed++;
         if (this.enemiesDestroyed == this.regularEnemyQuanity)
@@ -226,6 +267,9 @@ const gameManager = {
         }
     },
 
+    /**
+     * Called when the game was won
+     */
     gameWon(){
         this.app.stage.removeChild(this.scenes.main);
         this.scenes.win.visible = true;
@@ -233,6 +277,9 @@ const gameManager = {
         this.camera.target = dummy;
     },
 
+    /**
+     * Called when the player died
+     */
     playerDied(){
         this.app.stage.removeChild(this.scenes.main);
         this.scenes.death.visible = true;
@@ -246,6 +293,12 @@ const gameManager = {
  * @author Dan Singer
  */
 class Fader{
+    /**
+     * Make a new fader object
+     * @param {PIXI.Container} container 
+     * @param {PIXI.Application} app 
+     * @param {Number} duration 
+     */
     constructor(container, app, duration=1){
         this.container = container;
         this.duration = duration;
@@ -263,6 +316,10 @@ class Fader{
         return this;
     }
 
+    /**
+     * Set the function to be called when the fadeTo operation is complete
+     * @param {Function} callback 
+     */
     then(callback){
         this.callback = callback;
         return this;
@@ -285,6 +342,9 @@ class Fader{
     }
 
 
+    /**
+     * Linear Interpolate from a to b by t
+     */
     static lerp(a, b, t){
         return a + t*(b-a);
     }

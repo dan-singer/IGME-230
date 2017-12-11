@@ -13,23 +13,32 @@ class Player extends GameObject{
         this.health = 6;
         this.wasFiring = false;
         this.wasUp = false;
+        this.isDead = false;
 
         //Attach sprites and animations
         this.addSprite("idle", new PIXI.Sprite(gameManager.textures["player-idle_000.png"]));
         let animStartTravel = this.addAnimation("player-start-traveling", 0, 3);
-            animStartTravel.animationSpeed = 0.2;
             animStartTravel.loop = false;
-            animStartTravel.onComplete = () => {this.playAnimation("player-travel"); }
+            animStartTravel.animationSpeed = 0.2;
+            animStartTravel.onComplete = () => { 
+                if (this.keysDown.has("up"))
+                    this.playAnimation("player-travel"); };
         this.addAnimation("player-travel", 0, 9).animationSpeed = -.2;
 
-        let animEndTravel = new PIXI.extras.AnimatedSprite(animStartTravel.textures.slice().reverse());
+        let animEndTravel = this.addAnimation("player-start-traveling", 0, 3, true); //call as player-start-traveling-r
             animEndTravel.speed = 0.2;
             animEndTravel.loop = false;
-            animEndTravel.onComplete = () => this.setActiveSprite("idle");
+            animEndTravel.onComplete = () => { this.setActiveSprite("idle");};
         this.addSprite("player-end-traveling", animEndTravel);
 
 
-        this.addAnimation("player-die", 0, 12).animationSpeed = .2;
+
+        let animDie = this.addAnimation("player-die", 0, 12);
+            animDie.loop = false;
+            animDie.onComplete = () => { 
+                gameManager.playerDied();
+                this.destroy();
+            }
         
         
 
@@ -76,12 +85,14 @@ class Player extends GameObject{
     adjustHealth(amount){
         this.health += amount;
         if (this.health <= 0){
-            gameManager.playerDied();
-            this.destroy();
+            this.isDead = true;
+            this.playAnimation("player-die");
         }
     }
 
     update(){
+
+        if (this.isDead) return;
 
         let dt = 1 / this.app.ticker.FPS;
 
@@ -105,7 +116,9 @@ class Player extends GameObject{
             this.motor.applyForce(force);
         }
         else if (this.wasUp)
-            this.playAnimation("player-end-traveling");
+        {
+            this.playAnimation("player-start-traveling-r");
+        }
 
         //Rotation
         if (this.keysDown.has("left")){

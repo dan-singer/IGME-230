@@ -106,13 +106,22 @@ class GameObject extends PIXI.Container{
         this.activeSprite.visible = true;
     }
 
-    addAnimation(prefix, min, max){
+    addAnimation(prefix, min, max, reverse=false){
         let arr = [];
-        for (let i=min; i<max; i++)
-        {
-            arr.push(PIXI.Texture.fromFrame(`${prefix}_${this.toSpriterNum(i)}.png`));
-        }
+
+        let pushToArr = (i) => arr.push(PIXI.Texture.fromFrame(`${prefix}_${GameObject.toSpriterNum(i)}.png`));
+        
+        if (!reverse)
+            for (let i=min; i<max; i++)
+                pushToArr(i);
+        else
+            for (let i=max-1; i>=min; i--)
+                pushToArr(i);
+        
         let anim = new PIXI.extras.AnimatedSprite(arr);
+
+        if (reverse) prefix += "-r";
+        
         this.addSprite(prefix, anim);
         return anim;
     }
@@ -123,7 +132,8 @@ class GameObject extends PIXI.Container{
      */
     playAnimation(name){
         this.setActiveSprite(name);
-        this.sprites.get(name).play();
+        this.sprites.get(name).gotoAndPlay(0);
+        console.log(`playing ${name}`);
     }
 
     /*Abstract Collision methods. You must attach a collider for these to be called. Other is a Collider.*/
@@ -148,7 +158,7 @@ class GameObject extends PIXI.Container{
 
 
 
-    toSpriterNum(num){
+    static toSpriterNum(num){
         if (num < 10) 
             return `00${num}`;
         else if (num < 100)

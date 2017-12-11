@@ -24,6 +24,7 @@ const gameManager = {
     cellSize: null,
     enemiesDestroyed: 0,
     regularEnemyQuanity: 4,
+    textures: null,
     /**
      * Called when window has loaded.
      */
@@ -36,11 +37,7 @@ const gameManager = {
         this.bounds = new PIXI.Rectangle(-this.cellSize.x, -this.cellSize.y, this.cellSize.x * 3, this.cellSize.y * 3);
 
         PIXI.loader
-            .add([
-                "media/player.json",
-                "media/enemy.json",
-                "media/misc.json"
-            ])
+            .add("media/sprites.json")
             .load(()=>{
                 this.assetsLoaded();
             });
@@ -50,7 +47,7 @@ const gameManager = {
      * Callback when assets have been loaded
      */
     assetsLoaded(){
-        let resources = PIXI.loader.resources;
+        this.textures = PIXI.loader.resources["media/sprites.json"].textures;
         this.app.ticker.add(()=>{CollisionManager.update()});
         this.scenes.main = this.generateLevel();
         this.app.stage.addChild(this.scenes.main);
@@ -63,9 +60,9 @@ const gameManager = {
     generateLevel(){
         let mainScene = new PIXI.Container();
         this.spawnPlayer(mainScene);
-        this.spawnCamera();
-        this.spawnEnemies(mainScene);
-        this.spawnPickups(mainScene);
+        //this.spawnCamera();
+        //this.spawnEnemies(mainScene);
+        //this.spawnPickups(mainScene);
         //this.spawnBoundaries(mainScene);
         return mainScene;
     },
@@ -137,7 +134,7 @@ const gameManager = {
 
     playerDied(){
         //TODO show message
-    }
+    },
 };
 
 //Use arrow function to avoid wrong this being referenced in window callback

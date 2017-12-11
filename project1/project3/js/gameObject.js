@@ -106,11 +106,23 @@ class GameObject extends PIXI.Container{
         this.activeSprite.visible = true;
     }
 
+    addAnimation(prefix, min, max){
+        let arr = [];
+        for (let i=min; i<max; i++)
+        {
+            arr.push(PIXI.Texture.fromFrame(`${prefix}_${this.toSpriterNum(i)}.png`));
+        }
+        let anim = new PIXI.extras.AnimatedSprite(arr);
+        this.addSprite(prefix, anim);
+        return anim;
+    }
+
     /**
      * Play the specified sprite's animation. Sprite must be an AnimatedSprite for this to work.
      * @param {String} name 
      */
     playAnimation(name){
+        this.setActiveSprite(name);
         this.sprites.get(name).play();
     }
 
@@ -131,6 +143,18 @@ class GameObject extends PIXI.Container{
         }
         this.app.ticker.remove(this.updateRef);        
         this.parent.removeChild(this);
+    }
+
+
+
+
+    toSpriterNum(num){
+        if (num < 10) 
+            return `00${num}`;
+        else if (num < 100)
+            return `0${num}`;
+        else
+            return num + "";
     }
 }
 

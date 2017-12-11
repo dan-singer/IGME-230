@@ -12,9 +12,28 @@ class Player extends GameObject{
         this.radiansPerSecond = 1.5;
         this.health = 6;
         this.wasFiring = false;
+        this.wasUp = false;
 
-        //Attach sprites
+        //Attach sprites and animations
+        this.addSprite("idle", new PIXI.Sprite(gameManager.textures["player-idle_000.png"]));
+        let animStartTravel = this.addAnimation("player-start-traveling", 0, 3);
+            animStartTravel.animationSpeed = 0.2;
+            animStartTravel.loop = false;
+            animStartTravel.onComplete = () => {this.playAnimation("player-travel"); }
+        this.addAnimation("player-travel", 0, 9).animationSpeed = -.2;
+
+        let animEndTravel = new PIXI.extras.AnimatedSprite(animStartTravel.textures.slice().reverse());
+            animEndTravel.speed = 0.2;
+            animEndTravel.loop = false;
+            animEndTravel.onComplete = () => this.setActiveSprite("idle");
+        this.addSprite("player-end-traveling", animEndTravel);
+
+
+        this.addAnimation("player-die", 0, 12).animationSpeed = .2;
         
+        
+
+        let travel = [];
 
         this.keyMapping = {
             "ArrowLeft": "left",
@@ -77,9 +96,16 @@ class Player extends GameObject{
 
         //Thrust
         if (this.keysDown.has("up")){
+
+            if (!this.wasUp)
+            {
+                this.playAnimation("player-start-traveling");
+            }
             let force = this.forward.scale(this.thrustMagnitude);
             this.motor.applyForce(force);
         }
+        else if (this.wasUp)
+            this.playAnimation("player-end-traveling");
 
         //Rotation
         if (this.keysDown.has("left")){
@@ -98,6 +124,7 @@ class Player extends GameObject{
         
 
         this.wasFiring = this.keysDown.has("fire");
+        this.wasUp = this.keysDown.has("up");
     }
 
 

@@ -137,6 +137,17 @@ class GameObject extends PIXI.Container{
         this.sprites.get(name).gotoAndPlay(0);
     }
 
+    /**
+     * Make the GameObject flicker quickly (or provide parameters to adjust this)
+     * @param {Number} newAlpha 
+     * @param {Number} duration 
+     */
+    flicker(newAlpha=0.5, duration=100){
+        let prevAlpha = this.activeSprite.alpha;
+        this.alpha = newAlpha;
+        setTimeout(()=>this.alpha=prevAlpha, duration);
+    }
+
     /*Abstract Collision methods. You must attach a collider for these to be called. Other is a Collider.*/
     onCollisionBegin(other){ }
     onCollision(other){ }

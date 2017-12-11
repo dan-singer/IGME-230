@@ -99,6 +99,12 @@ class Collider{
         let test = Ainfo.min.x < Binfo.max.x && Ainfo.max.x > Binfo.min.x && Ainfo.min.y < Binfo.max.y && Ainfo.max.y > Binfo.min.y;
         return test;
     }
+
+    static circleCompletelyInRectangle(pos, radius, rect){
+        let test = pos.x + radius > rect.x + rect.width || pos.x - radius < rect.x 
+            || pos.y + radius > rect.y + rect.height || pos.y - radius < rect.y;
+        return !test;
+    }
 }
 
 /**

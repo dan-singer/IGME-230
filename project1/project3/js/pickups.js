@@ -2,6 +2,7 @@ class Pickup extends GameObject{
     constructor(name, app, position=null){
         super(name, app, position);
         this.worth = 1;
+        this.scale = {x:.2, y:.2};
         this.attachCollider();
     }
 
@@ -17,7 +18,7 @@ class Pickup extends GameObject{
 class HealthPickup extends Pickup{
     constructor(name, app, position=null){
         super(name, app, position);
-        this.addSprite("media/pickup-health.png");
+        this.addSprite("pickup-health.png");
     }
 
     onPickedUp(player){
@@ -27,7 +28,7 @@ class HealthPickup extends Pickup{
 class ScorePickup extends Pickup{
     constructor(name, app, position=null){
         super(name, app, position);
-        this.addSprite("media/pickup-score.png");        
+        this.addSprite("pickup-score.png");        
     }
 
     onPickedUp(player){

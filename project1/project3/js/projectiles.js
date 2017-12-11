@@ -44,7 +44,7 @@ class PlayerBullet extends Bullet{
         //Player bullet should damage the enemy
         if (other.gameObject instanceof Enemy){
             other.gameObject.decrementHealth(this.strength);
-            Motor.resolveElasticCollision(this.motor, other.gameObject.motor);
+            //Motor.resolveElasticCollision(this.motor, other.gameObject.motor);
         }
         if (!(other.gameObject instanceof Player))
             super.onCollisionBegin(other);

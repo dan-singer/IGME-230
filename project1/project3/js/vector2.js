@@ -75,6 +75,8 @@ class Vector2{
      */
     normalize(){
         let mag = this.magnitude;
+        if (mag == 0) return new Vector2(0,0);
+
         this.x /= mag;
         this.y /= mag;
         return this;

@@ -37,7 +37,7 @@ class FollowCam extends Camera{
      * Make a follow camera
      * @param {PIXI.Container} target 
      */
-    constructor(container, app, target, speed=3){
+    constructor(container, app, target, speed=1){
         super(container, app);
         this.target = target;
         this.speed = speed;

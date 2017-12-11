@@ -2,6 +2,7 @@
 
 let enemy;
 const gameManager = {
+    
     app: null,
     camera: null,
     dragSettings: {
@@ -9,7 +10,7 @@ const gameManager = {
         drag: .14,
         areaDivisor: 8000
     },
-    pickupsPerCell: {min: 5, max: 10},
+    pickupsPerCell: {min: 3, max: 5},
     scenes: {
         title: null,
         main: null,
@@ -60,10 +61,11 @@ const gameManager = {
     generateLevel(){
         let mainScene = new PIXI.Container();
         this.spawnPlayer(mainScene);
-        this.spawnCamera();
         this.spawnEnemies(mainScene);
         this.drawBoundaries(mainScene);
-        //this.spawnPickups(mainScene);
+        this.spawnPickups(mainScene);
+        this.spawnCamera();
+        
         return mainScene;
     },
 
@@ -77,7 +79,7 @@ const gameManager = {
     },
 
     spawnCamera(){
-        this.camera = new FollowCam(this.app.stage, this.app, this.player); 
+        this.camera = new FollowCam(this.app.stage, this.app, this.player);
     },
 
     /**

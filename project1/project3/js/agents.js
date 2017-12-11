@@ -35,10 +35,11 @@ class Vehicle extends GameObject{
     }
 
     constrain(rectangle){
-        let test = Collider.AABB(this.rect, rectangle);
+        let test = Collider.circleCompletelyInRectangle(this.position, this.radius, rectangle);
         if (!test)
         {
             let center = new Vector2(rectangle.x + rectangle.width/2, rectangle.y + rectangle.height/2);
+            console.log("contstraining");
             return this.seek(center);
         }
         else{
@@ -89,6 +90,7 @@ class Enemy extends Vehicle{
 
     decrementHealth(amount){
         this.health -= amount;
+        this.flicker();
         if (this.health <= 0){
             gameManager.enemyDestroyed();
             this.destroy();

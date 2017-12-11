@@ -8,12 +8,16 @@ class Player extends GameObject{
         this.attachMotor();
         this.attachCollider();
 
-        this.thrustMagnitude = 250;
+        this.thrustMagnitude = 350;
         this.radiansPerSecond = 1.5;
         this.health = 6;
+
+        this.msBetweenShots = 250;
         this.wasFiring = false;
+        this.prevBulletFireTime = 0;
         this.wasUp = false;
         this.isDead = false;
+
 
         //Attach sprites and animations
         this.addSprite("idle", new PIXI.Sprite(gameManager.textures["player-idle_000.png"]));
@@ -84,6 +88,7 @@ class Player extends GameObject{
 
     adjustHealth(amount){
         this.health += amount;
+        this.flicker();
         if (this.health <= 0){
             this.isDead = true;
             this.playAnimation("player-die");
@@ -101,8 +106,7 @@ class Player extends GameObject{
 
         //Check if I'm out of bounds
         let futurePos = Vector2.add(this.posVector, Vector2.scale(this.motor.velocity, .1));
-        if (futurePos.x + this.radius > gameManager.bounds.x + gameManager.bounds.width || futurePos.x - this.radius < gameManager.bounds.x 
-            || futurePos.y + this.radius > gameManager.bounds.y + gameManager.bounds.height || futurePos.y - this.radius < gameManager.bounds.y){
+        if (!Collider.circleCompletelyInRectangle(futurePos, this.radius, gameManager.bounds)){
             //We can "fake" an elastic collision by just supplying an object literal with mass and velocity to the Motor method.
             Motor.resolveElasticCollision(this.motor, {mass: 10, velocity: new Vector2(0,0)});
         }
@@ -132,10 +136,15 @@ class Player extends GameObject{
 
         //Fire
         if (this.keysDown.has("fire") && !this.wasFiring){
-            //Spawn a bullet
-            let spawnPos = Vector2.add(this.posVector, Vector2.scale(this.forward, this.radius));
-            let bullet = new PlayerBullet("b", this.app, spawnPos, this.forward);
-            this.parent.addChild(bullet);
+
+            if (new Date().getTime() - this.prevBulletFireTime > this.msBetweenShots)
+            {
+                //Spawn a bullet
+                let spawnPos = Vector2.add(this.posVector, Vector2.scale(this.forward, this.radius));
+                let bullet = new PlayerBullet("b", this.app, spawnPos, this.forward);
+                this.parent.addChild(bullet);
+                this.prevBulletFireTime = new Date().getTime();
+            }
         }
         
 

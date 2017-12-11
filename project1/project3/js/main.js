@@ -20,10 +20,14 @@ const gameManager = {
     },
     pickups: [],
     enemies: [], 
+    //Rectangle describing bounds of level
     bounds : null,
     player: null,
     score: 0,
-    cellSize: null,
+    cellDimensions: null,
+    //Grid of rectangles in the level (Just for reference, they don't hold anything)
+    levelGrid: [],
+    gridDimensions: new Vector2(3,3),
     enemiesDestroyed: 0,
     regularEnemyQuanity: 4,
     textures: null,
@@ -35,8 +39,20 @@ const gameManager = {
         let gameContainer = document.querySelector("#game");
         this.app = new PIXI.Application(gameContainer.clientWidth, gameContainer.clientHeight);
         gameContainer.appendChild(this.app.view);
-        this.cellSize = new Vector2(this.app.screen.width, this.app.screen.height);
-        this.bounds = new PIXI.Rectangle(-this.cellSize.x, -this.cellSize.y, this.cellSize.x * 3, this.cellSize.y * 3);
+        this.cellDimensions = new Vector2(this.app.screen.width, this.app.screen.height);
+        this.bounds = new PIXI.Rectangle(-this.cellDimensions.x, -this.cellDimensions.y, this.cellDimensions.x * 3, this.cellDimensions.y * 3);
+
+        //Create the reference rectangles
+        for (let i=0; i<this.gridDimensions.y; i++){
+            this.levelGrid.push([]);
+            for (let j=0; j<this.gridDimensions.x; j++){
+                this.levelGrid[this.levelGrid.length-1].push(
+                    //j-1 and i-1 so cell in middle is at (0,0) 
+                    new PIXI.Rectangle((j-1) * this.cellDimensions.x, (i-1) * this.cellDimensions.y, this.cellDimensions.x, this.cellDimensions.y)
+                );
+            }
+        }
+        console.log(this.levelGrid);
 
         PIXI.loader
             .add("media/sprites.json")
@@ -58,10 +74,15 @@ const gameManager = {
         this.scenes.death = this.generateDeath();
             this.scenes.death.visible = false;
         
+        /*Add back in later
         for (let scene in this.scenes){
             if (this.scenes[scene])
                 this.app.stage.addChild(this.scenes[scene]);
-        }
+        }*/
+
+        //Temporary
+        this.scenes.main = this.generateLevel();
+        this.app.stage.addChild(this.scenes.main);
     },
     
     /**
@@ -178,6 +199,7 @@ const gameManager = {
         this.drawBoundaries(mainScene);
         this.spawnPickups(mainScene);
         this.spawnCamera();
+        this.createHUD(mainScene);
         
         return mainScene;
     },
@@ -195,17 +217,36 @@ const gameManager = {
         this.camera = new FollowCam(this.app.stage, this.app, this.player);
     },
 
+    createHUD(scene){
+        let margin = 20;
+        let healthHUD = new HUDLabel(()=>{return `Health: ${this.player.health}`;}, this.app, this.camera);
+            healthHUD.positionOffset = {x:margin, y:margin};
+        let scoreHUD = new HUDLabel(()=>{return `Score: ${this.score}`;}, this.app, this.camera);
+            scoreHUD.positionOffset = {x:this.app.screen.width-scoreHUD.width-margin, y:margin};
+        let roomHUD = new HUDLabel( ()=> {
+            for (let i=0; i<this.levelGrid.length; i++){
+                for (let j=0; j<this.levelGrid[i].length; j++){
+                    if (Collider.circleCompletelyInRectangle(this.player.position, this.player.radius, this.levelGrid[i][j])){
+                        return `Sector ${i+1}.${j+1}`;
+                    }
+                }
+            }
+        }, this.app, this.camera);
+        roomHUD.positionOffset = {x:this.app.screen.width/2 - roomHUD.width/2, y:this.app.screen.height-roomHUD.height-margin};
+        scene.addChild(healthHUD); scene.addChild(scoreHUD); scene.addChild(roomHUD);
+    },
+
     /**
      * Spawn enemies in the scene
      * @param {PIXI.Container} scene 
      */
     spawnEnemies(scene){
         this.enemies = [
-            new SeekEnemy("seek1", this.app, this.player, {x:-this.cellSize.x/2, y:-this.cellSize.y/2}),
-            new SeekEnemy("seek2", this.app, this.player, {x:this.cellSize.x*1.5, y:this.cellSize.y*1.5}),
-            new WanderFireEnemy("wander1", this.app, this.player, {x:-this.cellSize.x/2, y:this.cellSize.y*1.5}),
-            new WanderFireEnemy("wander2", this.app, this.player, {x:this.cellSize.x*1.5, y:-this.cellSize.y/2}),
-            new Boss("boss", this.app, this.player, {x:this.cellSize.x/2 + 50, y:this.cellSize.y/2})
+            new SeekEnemy("seek1", this.app, this.player, {x:-this.cellDimensions.x/2, y:-this.cellDimensions.y/2}),
+            new SeekEnemy("seek2", this.app, this.player, {x:this.cellDimensions.x*1.5, y:this.cellDimensions.y*1.5}),
+            new WanderFireEnemy("wander1", this.app, this.player, {x:-this.cellDimensions.x/2, y:this.cellDimensions.y*1.5}),
+            new WanderFireEnemy("wander2", this.app, this.player, {x:this.cellDimensions.x*1.5, y:-this.cellDimensions.y/2}),
+            new Boss("boss", this.app, this.player, {x:this.cellDimensions.x/2 + 50, y:this.cellDimensions.y/2})
         ];
         this.enemies.forEach((enemy) => scene.addChild(enemy));
     },
@@ -217,10 +258,10 @@ const gameManager = {
     spawnPickups(scene){
         //Get the rectangles where pickups will be spawed
         let rects = [
-            new PIXI.Rectangle(-this.cellSize.x, 0, this.cellSize.x, this.cellSize.y),
-            new PIXI.Rectangle(this.cellSize.x, 0, this.cellSize.x, this.cellSize.y),
-            new PIXI.Rectangle(0, -this.cellSize.y, this.cellSize.x, this.cellSize.y),
-            new PIXI.Rectangle(0, this.cellSize.y, this.cellSize.x, this.cellSize.y)
+            new PIXI.Rectangle(-this.cellDimensions.x, 0, this.cellDimensions.x, this.cellDimensions.y),
+            new PIXI.Rectangle(this.cellDimensions.x, 0, this.cellDimensions.x, this.cellDimensions.y),
+            new PIXI.Rectangle(0, -this.cellDimensions.y, this.cellDimensions.x, this.cellDimensions.y),
+            new PIXI.Rectangle(0, this.cellDimensions.y, this.cellDimensions.x, this.cellDimensions.y)
         ];
         rects.forEach( (rect) => {
             let pickupsToSpawn = Math.random() * (this.pickupsPerCell.max - this.pickupsPerCell.min) + this.pickupsPerCell.min;
@@ -312,6 +353,7 @@ class Fader{
     }
 
     fadeTo(alpha){
+        this.container.visible = true;
         this.alphaTarget = alpha;
         return this;
     }
@@ -329,7 +371,6 @@ class Fader{
         let dt = 1 / this.app.ticker.FPS;
         if (this.alphaTarget != null){
             this.container.alpha = Fader.lerp(this.startAlpha, this.alphaTarget, this.timer);
-            this.timer += dt / this.duration;
             if (this.timer >= 1){
                 this.timer = 0;
                 this.startAlpha = this.alphaTarget;
@@ -338,6 +379,7 @@ class Fader{
                     this.callback();
                 this.callback = null; //Make sure this doesn't get called again if we chain fades with then 
             }
+            this.timer += dt / this.duration;            
         }
     }
 

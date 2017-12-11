@@ -50,8 +50,66 @@ const gameManager = {
     assetsLoaded(){
         this.textures = PIXI.loader.resources["media/sprites.json"].textures;
         this.app.ticker.add(()=>{CollisionManager.update()});
-        this.scenes.main = this.generateLevel();
-        this.app.stage.addChild(this.scenes.main);
+        this.scenes.title = this.generateTitle();
+        this.scenes.win = this.generateWin();
+            this.scenes.win.visible = false;
+        this.scenes.death = this.generateDeath();
+            this.scenes.death.visible = false;
+        
+        for (let scene in this.scenes){
+            if (this.scenes[scene])
+                this.app.stage.addChild(this.scenes[scene]);
+        }
+    },
+
+    generateTitle(){
+        let titleScene = new PIXI.Container();
+        let title = new Title("Space Voyager");
+            title.position = {x: this.app.screen.width/2 - title.width/2, y: 0};
+        let button = new Button("Begin", ()=>{
+            titleScene.visible = false;
+            this.scenes.main = this.generateLevel();
+            this.app.stage.addChild(this.scenes.main);
+        });
+        button.position = {x: this.app.screen.width/2 - button.width/2, y: this.app.screen.height/2 - button.height/2};
+            
+        titleScene.addChild(title);
+        titleScene.addChild(button);
+        return titleScene;
+    },
+
+    generateWin(){
+
+        let winScene = new PIXI.Container();
+
+        let label = new Label("Mission Accomplished");
+        label.position = {x: this.app.screen.width/2 - label.width/2, y: 0};
+
+        let button = new Button("Back to title", ()=>{
+            this.camera.destroy();
+            this.scenes.win.visible = false;
+            this.scenes.title.visible = true;
+        });
+        button.position = {x:this.app.screen.width/2 - button.width/2, y: this.app.screen.height/2 - button.height/2};        
+        winScene.addChild(label); winScene.addChild(button);
+        return winScene;
+    },
+
+    generateDeath(){
+        let deathScene = new PIXI.Container();
+        
+        let label = new Label("Mission Failed");
+        label.position = {x: this.app.screen.width/2 - label.width/2, y: 0};
+
+        let button = new Button("Restart", ()=>{
+            this.camera.destroy();
+            this.scenes.main = this.generateLevel();
+            this.scenes.death.visible = false;
+            this.app.stage.addChild(this.scenes.main);
+        });
+        button.position = {x:this.app.screen.width/2 - button.width/2, y: this.app.screen.height/2 - button.height/2};
+        deathScene.addChild(label); deathScene.addChild(button);
+        return deathScene;
     },
 
     /**
@@ -141,11 +199,25 @@ const gameManager = {
         {
             this.enemies[this.enemies.length-1].activate();
         }
+        else if (this.enemiesDestroyed == this.regularEnemyQuanity + 1)
+        {
+            this.gameWon();      
+        }
+    },
+
+    gameWon(){
+        this.app.stage.removeChild(this.scenes.main);
+        this.scenes.win.visible = true;
+        let dummy = new GameObject("dummy", this.app, {x: this.app.screen.width/2, y:this.app.screen.height/2});
+        this.camera.target = dummy;
     },
 
     playerDied(){
-        //TODO show message
-    },
+        this.app.stage.removeChild(this.scenes.main);
+        this.scenes.death.visible = true;
+        let dummy = new GameObject("dummy", this.app, {x: this.app.screen.width/2, y:this.app.screen.height/2});
+        this.camera.target = dummy;
+    }
 };
 
 //Use arrow function to avoid wrong this being referenced in window callback

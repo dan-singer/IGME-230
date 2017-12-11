@@ -100,7 +100,8 @@ class Enemy extends Vehicle{
     fire(direction){
         if (new Date().getTime() - this.fireInfo.lastFireTime  > this.fireInfo.msBetweenShots)
         {
-            let bullet = new EnemyBullet("eb", this.app, this, direction);
+            let spawnPos = Vector2.add(this.posVector, Vector2.scale(direction, this.radius));
+            let bullet = new EnemyBullet("eb", this.app, spawnPos, direction);
             this.parent.addChild(bullet);
             this.fireInfo.lastFireTime = new Date().getTime();
         }

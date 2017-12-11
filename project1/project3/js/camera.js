@@ -7,7 +7,8 @@ class Camera{
     constructor(container, app){
         this.container = container;
         this.app = app;
-        this.app.ticker.add(()=>this.update());
+        this.updateRef = ()=>this.update();
+        this.app.ticker.add(this.updateRef);
     }
     /**
      * Set the upper left corner of the camera viewing rectangle.
@@ -30,6 +31,10 @@ class Camera{
     }
 
     update(){ }
+
+    destroy(){
+        this.app.ticker.remove(this.updateRef);
+    }
 }
 
 class FollowCam extends Camera{

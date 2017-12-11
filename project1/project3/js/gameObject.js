@@ -66,11 +66,12 @@ class GameObject extends PIXI.Container{
      * Add a sprite to the GameObject's list of potential sprites. Note this will not display the Sprite if there is already an active one.
      * @param {String} name name of the sprite, or path to sprite if second argument not supplied
      * @param {PIXI.Sprite} sprite 
+     * @return {PIXI.Sprite}
      */
     addSprite(name, sprite=null){
 
         if (sprite == null)
-            sprite = new PIXI.Sprite(PIXI.loader.resources[name].texture); 
+            sprite = new PIXI.Sprite(PIXI.TextureCache[name]); 
         sprite.anchor.set(0.5,0.5);
         if (!this.activeSprite){
             sprite.visible = true;
@@ -81,6 +82,7 @@ class GameObject extends PIXI.Container{
         }
         this.sprites.set(name, sprite);        
         this.addChild(sprite);
+        return sprite;
     }
 
 
@@ -133,7 +135,6 @@ class GameObject extends PIXI.Container{
     playAnimation(name){
         this.setActiveSprite(name);
         this.sprites.get(name).gotoAndPlay(0);
-        console.log(`playing ${name}`);
     }
 
     /*Abstract Collision methods. You must attach a collider for these to be called. Other is a Collider.*/

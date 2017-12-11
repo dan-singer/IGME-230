@@ -100,7 +100,9 @@ class Player extends GameObject{
         this.motor.applyDrag(gameManager.dragSettings);
 
         //Check if I'm out of bounds
-        if (!Collider.AABB(this.rect, gameManager.bounds)){
+        let futurePos = Vector2.add(this.posVector, Vector2.scale(this.motor.velocity, .1));
+        if (futurePos.x + this.radius > gameManager.bounds.x + gameManager.bounds.width || futurePos.x - this.radius < gameManager.bounds.x 
+            || futurePos.y + this.radius > gameManager.bounds.y + gameManager.bounds.height || futurePos.y - this.radius < gameManager.bounds.y){
             //We can "fake" an elastic collision by just supplying an object literal with mass and velocity to the Motor method.
             Motor.resolveElasticCollision(this.motor, {mass: 10, velocity: new Vector2(0,0)});
         }
@@ -131,7 +133,8 @@ class Player extends GameObject{
         //Fire
         if (this.keysDown.has("fire") && !this.wasFiring){
             //Spawn a bullet
-            let bullet = new PlayerBullet("b", this.app, this, this.forward);
+            let spawnPos = Vector2.add(this.posVector, Vector2.scale(this.forward, this.radius));
+            let bullet = new PlayerBullet("b", this.app, spawnPos, this.forward);
             this.parent.addChild(bullet);
         }
         

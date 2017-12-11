@@ -60,10 +60,10 @@ const gameManager = {
     generateLevel(){
         let mainScene = new PIXI.Container();
         this.spawnPlayer(mainScene);
-        //this.spawnCamera();
-        //this.spawnEnemies(mainScene);
+        this.spawnCamera();
+        this.spawnEnemies(mainScene);
+        this.drawBoundaries(mainScene);
         //this.spawnPickups(mainScene);
-        //this.spawnBoundaries(mainScene);
         return mainScene;
     },
 
@@ -122,6 +122,15 @@ const gameManager = {
                 scene.addChild(pickup);
             }
         });
+    },
+
+    drawBoundaries(scene){
+        let boundRect = new PIXI.Graphics();
+        boundRect.beginFill(0,0);
+        boundRect.lineStyle(1, 0xFFFFFF, 1);
+        boundRect.drawShape(this.bounds);
+        boundRect.endFill();
+        scene.addChild(boundRect);
     },
 
     enemyDestroyed(){

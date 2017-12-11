@@ -65,12 +65,14 @@ class Enemy extends Vehicle{
 
 
         this.constrainRect = new PIXI.Rectangle(this.position.x - this.app.screen.width/2, this.position.y - this.app.screen.height/2, this.app.screen.width, this.app.screen.height);
-        //debugger;
         this.fireInfo = {
             canFire: false,
             msBetweenShots: 1000,
             lastFireTime: 0
         };
+
+        //Add Sprites
+        this.addAnimation("enemy-idle", 0, 15);
     }
 
     onCollisionBegin(other){
@@ -118,7 +120,6 @@ class Enemy extends Vehicle{
 class SeekEnemy extends Enemy{
     constructor(name, app, player, position=null){
         super(name, app, player, position);
-        this.addSprite("media/enemy.png");
     }
 
     update(){
@@ -131,7 +132,6 @@ class SeekEnemy extends Enemy{
 class WanderFireEnemy extends Enemy{
     constructor(name, app, player, position=null){
         super(name, app, player, position);
-        this.addSprite("media/enemy.png");        
         
     }
 
@@ -153,7 +153,6 @@ class WanderFireEnemy extends Enemy{
 class Boss extends Enemy{
     constructor(name, app, player, position=null){
         super(name, app, player, position);
-        this.addSprite("media/enemy.png");        
         this.canUpdate = false;
         this.visible = false;
         CollisionManager.unregister(this.collider);

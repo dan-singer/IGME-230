@@ -11,12 +11,10 @@ class Bullet extends GameObject{
      * @param {Vector2} direction 
      * @param {Number} launchForceMagnitude 
      */
-    constructor(name, app, source, direction, launchForceMagnitude){
-        super(name, app);
+    constructor(name, app, position, direction, launchForceMagnitude){
+        super(name, app, position);
         this.attachCollider();
         this.attachMotor();
-        //TODO switch this to a vector parameter rather than GameObject parameter
-        this.position = {x: source.x, y: source.y};        
         this.forward = direction;
         this.motor.applyForce(Vector2.scale(direction, launchForceMagnitude));        
 
@@ -35,10 +33,10 @@ class Bullet extends GameObject{
 }
 
 class PlayerBullet extends Bullet{
-    constructor(name, app, source, direction){
-        super(name, app, source, direction, 25000);
-        this.addSprite("media/bullet.png");
-                
+    constructor(name, app, position, direction){
+        super(name, app, position, direction, 50000);
+        this.addSprite("bullet.png").scale = {x: .2, y:.2};
+
     }
 
     onCollisionBegin(other){
@@ -54,9 +52,9 @@ class PlayerBullet extends Bullet{
 }
 
 class EnemyBullet extends Bullet{
-    constructor(name, app, source, direction){
-        super(name, app, source, direction, 25000);
-        this.addSprite("media/bullet.png");
+    constructor(name, app, position, direction){
+        super(name, app, position, direction, 25000);
+        this.addSprite("bullet.png");
     }
 
     onCollisionBegin(other){

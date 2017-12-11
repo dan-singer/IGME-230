@@ -21,7 +21,7 @@ class Title extends PIXI.Text{
     constructor(text){
         let style = new PIXI.TextStyle({
             fontFamily: "Saira",
-            fontSize: 48,
+            fontSize: 72,
             fill: 0xFFFFFF
         });
         super(text, style);
@@ -37,7 +37,7 @@ class Button extends PIXI.Text{
         let style = new PIXI.TextStyle({
             fontFamily: "Verdana",
             fontSize: 32,
-            fill: 0xEEEEEE
+            fill: 0x747272
         });
         super(text, style);
         this.interactive = true;

@@ -13,6 +13,7 @@ const gameManager = {
     pickupsPerCell: {min: 3, max: 5},
     scenes: {
         title: null,
+        instructions: null,
         main: null,
         death: null,
         win: null
@@ -51,6 +52,7 @@ const gameManager = {
         this.textures = PIXI.loader.resources["media/sprites.json"].textures;
         this.app.ticker.add(()=>{CollisionManager.update()});
         this.scenes.title = this.generateTitle();
+        this.scenes.instructions = this.generateInstructions();
         this.scenes.win = this.generateWin();
             this.scenes.win.visible = false;
         this.scenes.death = this.generateDeath();
@@ -65,17 +67,36 @@ const gameManager = {
     generateTitle(){
         let titleScene = new PIXI.Container();
         let title = new Title("Space Voyager");
-            title.position = {x: this.app.screen.width/2 - title.width/2, y: 0};
-        let button = new Button("Begin", ()=>{
-            titleScene.visible = false;
-            this.scenes.main = this.generateLevel();
-            this.app.stage.addChild(this.scenes.main);
+            title.position = {x: this.app.screen.width/2 - title.width/2, y: this.app.screen.height/2 - title.height/2};
+        let button = new Button("Start", ()=>{
+
+            new Fader(titleScene, this.app).fadeTo(0).then(()=>{
+                new Fader(this.scenes.instructions.children[0], this.app).fadeTo(1).then(()=>{
+                    new Fader(this.scenes.instructions.children[1], this.app).fadeTo(1);
+                });
+            });
+            //titleScene.visible = false;
+            //this.scenes.main = this.generateLevel();
+            //this.app.stage.addChild(this.scenes.main);
         });
-        button.position = {x: this.app.screen.width/2 - button.width/2, y: this.app.screen.height/2 - button.height/2};
+        button.position = {x: this.app.screen.width/2 - button.width/2, y: this.app.screen.height - button.height*2};
             
         titleScene.addChild(title);
         titleScene.addChild(button);
         return titleScene;
+    },
+
+    generateInstructions(){
+        let container = new PIXI.Container();
+        let instr = new Label("WASD/Arrows to move");
+            instr.position = {x:this.app.screen.width/2-instr.width, y:this.app.screen.height/2-instr.height};    
+            instr.alpha = 0;
+        let instr2 = new Label("Left Click/Space to shoot");
+            instr2.position = {x:this.app.screen.width/2, y:this.app.screen.height/2};        
+            instr2.alpha = 0;
+        container.addChild(instr);
+        container.addChild(instr2);
+        return container;
     },
 
     generateWin(){
@@ -220,7 +241,57 @@ const gameManager = {
     }
 };
 
+/**
+ * Fader utility class
+ * @author Dan Singer
+ */
+class Fader{
+    constructor(container, app, duration=1){
+        this.container = container;
+        this.duration = duration;
+        this.app = app;
+        this.updateRef = ()=>{this.update()};
+        app.ticker.add(this.updateRef);
+        this.startAlpha = container.alpha;
+        this.alphaTarget = null;
+        this.timer = 0;
+        this.callback = null;
+    }
+
+    fadeTo(alpha){
+        this.alphaTarget = alpha;
+        return this;
+    }
+
+    then(callback){
+        this.callback = callback;
+        return this;
+    }
+
+    update(){
+        let dt = 1 / this.app.ticker.FPS;
+        if (this.alphaTarget != null){
+            this.container.alpha = Fader.lerp(this.startAlpha, this.alphaTarget, this.timer);
+            this.timer += dt / this.duration;
+            if (this.timer >= 1){
+                this.timer = 0;
+                this.startAlpha = this.alphaTarget;
+                this.alphaTarget = null;                
+                if (this.callback)
+                    this.callback();
+                this.callback = null; //Make sure this doesn't get called again if we chain fades with then 
+            }
+        }
+    }
+
+
+    static lerp(a, b, t){
+        return a + t*(b-a);
+    }
+}
+
 //Use arrow function to avoid wrong this being referenced in window callback
 window.onload = ()=>{
     gameManager.windowLoaded();
 };
+

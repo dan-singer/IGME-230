@@ -49,7 +49,7 @@ class ScoreLabel extends DynamicLabel{
 class HighScoreLabel extends DynamicLabel{
     constructor(textGetter, app){
         super(textGetter, app);
-        let margin = 20;
+        let margin = 40;
         this.position = {x:this.app.screen.width - this.width - margin, y:margin};
     }
 }

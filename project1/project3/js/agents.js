@@ -61,7 +61,6 @@ class Vehicle extends GameObject{
         if (!test)
         {
             let center = new Vector2(rectangle.x + rectangle.width/2, rectangle.y + rectangle.height/2);
-            console.log("contstraining");
             return this.seek(center);
         }
         else{

@@ -21,24 +21,32 @@ class Bullet extends GameObject{
         this.strength = 1;
         this.motor.mass = 0.2;
     }
-
+    /** @inheritdoc */
     onCollisionBegin(other){
         super.onCollisionBegin(other);
         this.destroy();
     }
-
+    /** @inheritdoc */
     update(){
 
     }
 }
 
+/**
+ * Bullets that the player fires
+ * @author Dan Singer
+ */
 class PlayerBullet extends Bullet{
+    /**
+     * Make a new bullet
+     * @param {Vector2} direction 
+     */
     constructor(name, app, position, direction){
         super(name, app, position, direction, 50000);
         this.addSprite("bullet.png").scale = {x: .2, y:.2};
 
     }
-
+    /** @inheritdoc */
     onCollisionBegin(other){
         
         //Player bullet should damage the enemy
@@ -51,6 +59,10 @@ class PlayerBullet extends Bullet{
     }
 }
 
+/**
+ * Bullets the enemy fires
+ * @author Dan Singer
+ */
 class EnemyBullet extends Bullet{
     constructor(name, app, position, direction){
         super(name, app, position, direction, 25000);

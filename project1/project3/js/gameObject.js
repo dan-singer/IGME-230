@@ -1,12 +1,16 @@
 /**
- * Base GameObject class capable of holding multiple sprites and swapping between them.
+ * Base GameObject class capable of holding multiple sprites and swapping between them,
+ * recieving collision callbacks, and being destroyed. Each GameObject comes with an abstract update method 
+ * which is called each frame.
  * @author Dan Singer
  */
 class GameObject extends PIXI.Container{
 
     /**
      * Create a new GameObject
-     * @param {String} name 
+     * @param {String} name
+     * @param {PIXI.Application} app
+     * @param {PIXI.Point} position
      */
     constructor(name, app, position=null){
         super();
@@ -30,9 +34,15 @@ class GameObject extends PIXI.Container{
         this.collider = null;
     }
 
+    /**
+     * Get the position as a Vector2
+     */
     get posVector(){
         return new Vector2(this.position.x, this.position.y);
     }
+    /**
+     * Get the radius of this GameObject
+     */
     get radius(){
         if (!this.activeSprite)
             return 0;
@@ -40,10 +50,16 @@ class GameObject extends PIXI.Container{
             return Math.max(this.width, this.height) / 2;
     }
 
+    /**
+     * Get the rectangle of this GameObject
+     */
     get rect(){
         return new PIXI.Rectangle(this.position.x - this.width/2, this.position.y - this.height/2, this.width, this.height);
     }
 
+    /**
+     * Get the unit forward vector of this GameObject
+     */
     get forward(){
         //PIXI considers rotations clockwise, so we need to adjust for this.
         let temp = new Vector2(1,0).rotate(-this.rotation);
@@ -93,6 +109,9 @@ class GameObject extends PIXI.Container{
         this.motor = new Motor(this);
     }
 
+    /**
+     * Attach a circle collider to this GameObject
+     */
     attachCollider(){
         this.collider = new CircleCollider(this);
     }
@@ -108,6 +127,15 @@ class GameObject extends PIXI.Container{
         this.activeSprite.visible = true;
     }
 
+    /**
+     * Add a potential animation to this GameObject.
+     * Note that this is designed to work with animations created with Spriter, as it adheres to its naming convention of file_003.png
+     * @param {String} prefix prefix of the animation 
+     * @param {Number} min lowest frame number (inclusive) 
+     * @param {Number} max highest frame number (exclusive)
+     * @param {Boolean} reverse generate the animation in reverse?
+     * @return {PIXI.extras.AnimatedSprite} 
+     */
     addAnimation(prefix, min, max, reverse=false){
         let arr = [];
 
@@ -159,6 +187,9 @@ class GameObject extends PIXI.Container{
     update(){}
 
 
+    /**
+     * Unregister the collider if it exists, stop updating, and remove from the parent container
+     */
     destroy(){
         if (this.collider){
             CollisionManager.unregister(this.collider);
@@ -167,9 +198,11 @@ class GameObject extends PIXI.Container{
         this.parent.removeChild(this);
     }
 
-
-
-
+    /**
+     * Convert an index to a Spriter index. For example, 4 would be converted to "004"
+     * @param {Number} num 
+     * @return {String}
+     */
     static toSpriterNum(num){
         if (num < 10) 
             return `00${num}`;
@@ -233,6 +266,11 @@ class Motor{
         motorB.velocity = v2;
     }
 
+    /**
+     * Apply a drag force to this object based on the provided settings
+     * @see https://en.wikipedia.org/wiki/Drag_equation
+     * @param {DragSettings} settings should contain airDensity, drag, and areaDivisor
+     */
     applyDrag(settings){
         let airDensity = settings.airDensity; //0.3;
         let drag = settings.drag; //0.14;
@@ -242,12 +280,18 @@ class Motor{
         this.applyForce(this.velocity.normalized.scale(-airResistanceMag));
     }
 
+    /**
+     * This frame, zero out velocity and acceleration.
+     */
     stop(){
         this.velocity.clear();
         this.acceleration.clear();
     }
     
 
+    /**
+     * Synchronize the motor's stored position with the gameObject's position, as the gameObject's position is not a Vector2.
+     */
     syncPosition(){
         this.position.x = this.gameObject.position.x; 
         this.position.y = this.gameObject.position.y;        

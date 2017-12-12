@@ -109,24 +109,47 @@ class Vector2{
         this.x = 0; this.y = 0;
     }
 
+    /**
+     * Static vector addition method
+     * @param {Vector2} a 
+     * @param {Vector2} b 
+     */
     static add(a, b){
         return new Vector2(a.x + b.x, a.y + b.y);
     }
+    /**
+     * Static vector subtraction method
+     * @param {Vector2} a 
+     * @param {Vector2} b 
+     */
     static subtract(a,b){
         return new Vector2(a.x - b.x, a.y - b.y);
     }
+    /**
+     * Static scalar multiplication method
+     * @param {Vector2} a 
+     * @param {Number} scalar 
+     */
     static scale(a, scalar){
         return new Vector2(a.x * scalar, a.y * scalar);
     }
+    /**
+     * Static vector rotation method. Rotates a ccw radians.
+     * @param {Vector2} a 
+     * @param {Number} radians 
+     */
     static rotate(a, radians){
         let temp = new Vector2(a.x, a.y);
         return temp.rotate(radians);
     }
+    /**
+     * Linearly interpoloate from vectors a to b by t
+     * @param {Vector2} a 
+     * @param {Vector2} b 
+     * @param {Number} t 
+     */
     static lerp(a, b, t){
         return this.add(a, this.subtract(b,a).scale(t)); // a + t(b-a)
     }
 
 }
-
-let vec = new Vector2(1,0);
-vec.rotate(Math.PI/2);

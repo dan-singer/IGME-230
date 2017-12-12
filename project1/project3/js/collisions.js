@@ -7,9 +7,17 @@
 const CollisionManager = {
     colliders : [], 
     collMap: new Map(),
+    /**
+     * Register a collider so it can be checked for collisions
+     * @param {Collider} collider 
+     */
     register(collider){
       this.colliders.push(collider);  
     },
+    /**
+     * Unregister a collider so collisions will stop being checked with it
+     * @param {Collider} collider 
+     */
     unregister(collider){
         this.colliders.splice(this.colliders.indexOf(collider), 1);
 
@@ -24,6 +32,10 @@ const CollisionManager = {
             }
         }
     },
+    /**
+     * Check every collider in the colliders array against each other to see if they're colliding.
+     * This should be called each frame.
+     */
     update(){
         for (let i=0; i<this.colliders.length-1; i++){
             let colliderA = this.colliders[i];
@@ -100,6 +112,13 @@ class Collider{
         return test;
     }
 
+    /**
+     * Determine if a circle is completely inside of a rectangle
+     * @param {Vector2} pos 
+     * @param {Number} radius 
+     * @param {PIXI.Rectangle} rect 
+     * @return {Boolean}
+     */
     static circleCompletelyInRectangle(pos, radius, rect){
         let test = pos.x + radius > rect.x + rect.width || pos.x - radius < rect.x 
             || pos.y + radius > rect.y + rect.height || pos.y - radius < rect.y;
@@ -108,7 +127,7 @@ class Collider{
 }
 
 /**
- * Simple circle collider
+ * Circle Collider
  * @author Dan Singer
  */
 class CircleCollider extends Collider{

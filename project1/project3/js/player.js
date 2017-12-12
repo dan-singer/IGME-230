@@ -8,14 +8,14 @@ class Player extends GameObject{
         this.attachMotor();
         this.attachCollider();
 
-        this.thrustMagnitude = 350;
+        this.thrustMagnitude = 450;
         this.radiansPerSecond = 1.5;
         this.health = 6;
 
         this.msBetweenShots = 250;
         this.wasFiring = false;
-        this.prevBulletFireTime = 0;
         this.wasUp = false;
+        this.prevBulletFireTime = 0;
         this.isDead = false;
 
 
@@ -43,7 +43,7 @@ class Player extends GameObject{
                 gameManager.playerDied();
                 this.destroy();
             }
-        
+            
         
 
         let travel = [];
@@ -79,13 +79,19 @@ class Player extends GameObject{
         document.onmouseup = (e) => {this.keysDown.delete("fire")};
     }
 
+    /** @inheritdoc */
     onCollisionBegin(other){
 
     }
+    /** @inheritdoc */    
     onCollisionEnd(other){
 
     }
 
+    /**
+     * Adjust the player's health by the specified amount
+     * @param {Number} amount 
+     */
     adjustHealth(amount){
         this.health += amount;
         this.flicker();
@@ -95,6 +101,9 @@ class Player extends GameObject{
         }
     }
 
+    /**
+     * Main player logic
+     */
     update(){
 
         if (this.isDead) return;

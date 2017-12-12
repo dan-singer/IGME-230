@@ -1,6 +1,9 @@
 "use strict";
 
-let enemy;
+/**
+ * Main Game Manager for Space Voyager
+ * @author Dan Singer
+ */
 const gameManager = {
     
     app: null,
@@ -15,31 +18,35 @@ const gameManager = {
         title: null,
         instructions: null,
         main: null,
+        paused: null, //This is a nested in the main scene
         death: null,
         win: null
     },
     pickups: [],
-    enemies: [], 
+    enemies: [],    
     //Rectangle describing bounds of level
     bounds : null,
     player: null,
     score: 0,
-    cellDimensions: null,
+    highScore: 0,
+    cellDimensions: new Vector2(1600, 900),
     //Grid of rectangles in the level (Just for reference, they don't hold anything)
     levelGrid: [],
     gridDimensions: new Vector2(3,3),
     enemiesDestroyed: 0,
     regularEnemyQuanity: 4,
     textures: null,
+    gameContainer: null,
+    paused: false,
+    keyPrefix: "djs5435-",
     /**
      * Called when window has loaded.
      */
     windowLoaded(){
         
-        let gameContainer = document.querySelector("#game");
-        this.app = new PIXI.Application(gameContainer.clientWidth, gameContainer.clientHeight);
-        gameContainer.appendChild(this.app.view);
-        this.cellDimensions = new Vector2(this.app.screen.width, this.app.screen.height);
+        this.gameContainer = document.querySelector("#game");
+        this.app = new PIXI.Application({width:this.gameContainer.clientWidth, height:this.gameContainer.clientHeight});
+        this.gameContainer.appendChild(this.app.view);
         this.bounds = new PIXI.Rectangle(-this.cellDimensions.x, -this.cellDimensions.y, this.cellDimensions.x * 3, this.cellDimensions.y * 3);
 
         //Create the reference rectangles
@@ -52,7 +59,6 @@ const gameManager = {
                 );
             }
         }
-        console.log(this.levelGrid);
 
         PIXI.loader
             .add("media/sprites.json")
@@ -67,22 +73,33 @@ const gameManager = {
     assetsLoaded(){
         this.textures = PIXI.loader.resources["media/sprites.json"].textures;
         this.app.ticker.add(()=>{CollisionManager.update()});
+
+
+        //Make all scenes except for the main one
         this.scenes.title = this.generateTitle();
         this.scenes.instructions = this.generateInstructions();
         this.scenes.win = this.generateWin();
             this.scenes.win.visible = false;
         this.scenes.death = this.generateDeath();
             this.scenes.death.visible = false;
-        
-        /*Add back in later
         for (let scene in this.scenes){
             if (this.scenes[scene])
                 this.app.stage.addChild(this.scenes[scene]);
-        }*/
+        }
 
-        //Temporary
-        this.scenes.main = this.generateLevel();
-        this.app.stage.addChild(this.scenes.main);
+        //Create camera 
+        this.spawnCamera();
+
+        //Pause functionality
+        document.addEventListener("keydown", (e)=>{
+            if (e.key == "Escape")
+                this.togglePause();
+        });
+
+        //Fix canvas when window is resized
+        window.onresize = (e) => {
+            this.app.renderer.resize(this.gameContainer.clientWidth, this.gameContainer.clientHeight);
+        };
     },
     
     /**
@@ -158,15 +175,24 @@ const gameManager = {
         label.position = {x: this.app.screen.width/2 - label.width/2, y: 0};
 
         let button = new Button("Back to title", ()=>{
-            this.camera.destroy();
-            this.scenes.win.visible = false;
-            this.scenes.title.visible = true;
+            new Fader(winScene, this.app).fadeTo(0).then(()=>{
+                this.camera.target = null;                
+                this.scenes.win.visible = false;
+                this.scenes.title.visible = true;
+                new Fader(this.scenes.title, this.app).fadeTo(1);
+            });
         });
-        button.position = {x:this.app.screen.width/2 - button.width/2, y: this.app.screen.height/2 - button.height/2};        
-        winScene.addChild(label); winScene.addChild(button);
+        button.position = {x:this.app.screen.width/2 - button.width/2, y: this.app.screen.height - button.height};        
+        
+
+        let scoreLabel = new ScoreLabel(()=>`Score: ${this.score}`, this.app);
+        let highScoreLabel = new HighScoreLabel(()=>`High Score: ${this.getHighScore()}`, this.app);
+        
+
+        winScene.addChild(label, button, scoreLabel, highScoreLabel);
         return winScene;
     },
-
+    
     /**
      * Generate the death scene
      * @return {PIXI.Container}
@@ -175,16 +201,24 @@ const gameManager = {
         let deathScene = new PIXI.Container();
         
         let label = new Label("Mission Failed");
-        label.position = {x: this.app.screen.width/2 - label.width/2, y: 0};
+            label.position = {x: this.app.screen.width/2 - label.width/2, y: 0};
 
         let button = new Button("Restart", ()=>{
-            this.camera.destroy();
-            this.scenes.main = this.generateLevel();
-            this.scenes.death.visible = false;
-            this.app.stage.addChild(this.scenes.main);
+            new Fader(deathScene, this.app).fadeTo(0).then(()=>{
+                this.camera.target = null;
+                this.scenes.main = this.generateLevel();
+                this.scenes.death.visible = false;
+                this.app.stage.addChild(this.scenes.main);
+            });
         });
-        button.position = {x:this.app.screen.width/2 - button.width/2, y: this.app.screen.height/2 - button.height/2};
-        deathScene.addChild(label); deathScene.addChild(button);
+        button.position = {x:this.app.screen.width/2 - button.width/2, y: this.app.screen.height - button.height};
+        
+
+        let scoreLabel = new ScoreLabel(()=>`Score: ${this.score}`, this.app);        
+        let highScoreLabel = new HighScoreLabel(()=>`High Score: ${this.getHighScore()}`, this.app);
+        
+
+        deathScene.addChild(label, button, scoreLabel, highScoreLabel);
         return deathScene;
     },
 
@@ -198,9 +232,9 @@ const gameManager = {
         this.spawnEnemies(mainScene);
         this.drawBoundaries(mainScene);
         this.spawnPickups(mainScene);
-        this.spawnCamera();
         this.createHUD(mainScene);
-        
+        this.createPauseMenu(mainScene);
+        this.camera.target = this.player;
         return mainScene;
     },
 
@@ -213,16 +247,25 @@ const gameManager = {
         scene.addChild(this.player);
     },
 
+    /**
+     * Spawn a follow camera which follows nothing.
+     */
     spawnCamera(){
-        this.camera = new FollowCam(this.app.stage, this.app, this.player);
+        this.camera = new FollowCam(this.app.stage, this.app, null);
     },
 
+    /**
+     * Generate the heads-up-display for the scene
+     * @param {PIXI.Container} scene 
+     */
     createHUD(scene){
         let margin = 20;
         let healthHUD = new HUDLabel(()=>{return `Health: ${this.player.health}`;}, this.app, this.camera);
             healthHUD.positionOffset = {x:margin, y:margin};
+
         let scoreHUD = new HUDLabel(()=>{return `Score: ${this.score}`;}, this.app, this.camera);
-            scoreHUD.positionOffset = {x:this.app.screen.width-scoreHUD.width-margin, y:margin};
+            scoreHUD.positionOffset = {x:this.app.screen.width-scoreHUD.width-margin*4, y:margin};
+
         let roomHUD = new HUDLabel( ()=> {
             for (let i=0; i<this.levelGrid.length; i++){
                 for (let j=0; j<this.levelGrid[i].length; j++){
@@ -232,6 +275,7 @@ const gameManager = {
                 }
             }
         }, this.app, this.camera);
+
         roomHUD.positionOffset = {x:this.app.screen.width/2 - roomHUD.width/2, y:this.app.screen.height-roomHUD.height-margin};
         scene.addChild(healthHUD); scene.addChild(scoreHUD); scene.addChild(roomHUD);
     },
@@ -294,10 +338,24 @@ const gameManager = {
     },
 
     /**
+     * Create a pause menu in the main scene
+     * @param {PIXI.Container} scene 
+     */
+    createPauseMenu(scene){
+        this.scenes.paused = new PIXI.Container();
+        let pLabel = new HUDLabel(()=>"-Paused-", this.app, this.camera);
+        pLabel.positionOffset = {x:this.app.screen.width/2-pLabel.width/2, y:this.app.screen.height/2 - pLabel.height/2};
+        this.scenes.paused.addChild(pLabel);
+        this.scenes.paused.visible = false;
+        scene.addChild(this.scenes.paused);
+    },
+
+    /**
      * Called when an enemy is destroyed
      */
-    enemyDestroyed(){
+    enemyDestroyed(enemy){
         this.enemiesDestroyed++;
+        this.score += enemy.worth;
         if (this.enemiesDestroyed == this.regularEnemyQuanity)
         {
             this.enemies[this.enemies.length-1].activate();
@@ -308,14 +366,23 @@ const gameManager = {
         }
     },
 
+    __debugKillNormalEnemies(){
+        for (let i=0; i<this.enemies.length-1; i++)
+            this.enemies[i].decrementHealth(500);
+    },
     /**
      * Called when the game was won
      */
     gameWon(){
         this.app.stage.removeChild(this.scenes.main);
         this.scenes.win.visible = true;
+        this.scenes.win.alpha = 1;
         let dummy = new GameObject("dummy", this.app, {x: this.app.screen.width/2, y:this.app.screen.height/2});
         this.camera.target = dummy;
+        //update high score
+        if (this.score > this.getHighScore()){
+            this.setHighScore(this.score);
+        }
     },
 
     /**
@@ -324,9 +391,56 @@ const gameManager = {
     playerDied(){
         this.app.stage.removeChild(this.scenes.main);
         this.scenes.death.visible = true;
+        this.scenes.death.alpha = 1;
         let dummy = new GameObject("dummy", this.app, {x: this.app.screen.width/2, y:this.app.screen.height/2});
         this.camera.target = dummy;
+
+        //update high score
+        if (this.score > this.getHighScore()){
+            this.setHighScore(this.score);
+        }
+    },
+
+    /**
+     * Toggle whether the game is paused or not
+     */
+    togglePause(){
+        if (this.scenes.main == null)
+            return;
+        this.paused = !this.paused;
+        this.scenes.paused.visible = this.paused;      
+        //We need to wait a few milliseconds here to allow pixi to display the pause menu before we pause the entire ticker  
+        setTimeout(()=>{
+            if (this.paused){
+                this.app.ticker.stop();
+            }
+            else{
+                this.app.ticker.start();
+            }
+        }, 20);
+    },
+
+    /**
+     * Set the high score in localStorage
+     * @param {Number} score 
+     */
+    setHighScore(score){
+        localStorage.setItem(this.keyPrefix + "high-score", score);
+    },
+    /**
+     * Get the high score from localStorage
+     * @return {Number}
+     */
+    getHighScore(){
+        let score = localStorage.getItem(this.keyPrefix + "high-score");
+        if (score){
+            return parseInt(score);
+        }
+        else{
+            return 0;
+        }
     }
+
 };
 
 /**
@@ -340,7 +454,7 @@ class Fader{
      * @param {PIXI.Application} app 
      * @param {Number} duration 
      */
-    constructor(container, app, duration=1){
+    constructor(container, app, duration=1, skippable=true){
         this.container = container;
         this.duration = duration;
         this.app = app;
@@ -350,8 +464,22 @@ class Fader{
         this.alphaTarget = null;
         this.timer = 0;
         this.callback = null;
+
+        //Don't add the event listener immediately, in the event that the user just clicked a button
+        setTimeout(()=>{
+            if (skippable){
+                document.addEventListener("click", (e)=>{
+                    this.timer = 1;
+                });
+            }
+        }, 100); 
+
     }
 
+    /**
+     * Make the container fade to the specified alpha value over the duration specified in the constructor
+     * @param {Number} alpha 
+     */
     fadeTo(alpha){
         this.container.visible = true;
         this.alphaTarget = alpha;
@@ -367,9 +495,12 @@ class Fader{
         return this;
     }
 
+    /**
+     * Lerp between starting alpha and target alpha, if there is one
+     */
     update(){
         let dt = 1 / this.app.ticker.FPS;
-        if (this.alphaTarget != null){
+        if (this.alphaTarget != null){ 
             this.container.alpha = Fader.lerp(this.startAlpha, this.alphaTarget, this.timer);
             if (this.timer >= 1){
                 this.timer = 0;
@@ -386,14 +517,23 @@ class Fader{
 
     /**
      * Linear Interpolate from a to b by t
+     * @param {Number} a
+     * @param {Number} b
+     * @param {Number} t
+     * @return {Number}
      */
     static lerp(a, b, t){
         return a + t*(b-a);
     }
 }
 
-//Use arrow function to avoid wrong this being referenced in window callback
-window.onload = ()=>{
-    gameManager.windowLoaded();
-};
-
+//Wait for custom font to be loaded before making the canvas
+WebFont.load({
+    google: {
+        families: ['Saira']
+    },
+    //Use arrow function so proper this will be used
+    active:e=>{
+        gameManager.windowLoaded();
+    }
+});

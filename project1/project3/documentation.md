@@ -26,7 +26,8 @@ I was able to code a small game engine inside of PIXI with collision detection, 
 The scene management is highly inefficient, and not ideal. Additionally, I would have hoped to implement more player guidance, but ran out of time.
 Audio implementation is not very robust, and, if I had more time, would have liked to make it extensible and clearer.
 ## Future improvements
-Create a fully-featured scene manager and give the player more clear instructions.
+- Create a fully-featured scene manager and give the player more clear instructions.
+- Create an extensible audio manager.
 
 ## Contributions
 This was a solo project, so I completed the entirety of the project myself.

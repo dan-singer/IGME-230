@@ -90,6 +90,18 @@ const gameManager = {
         //Create camera 
         this.spawnCamera();
 
+        //Make a permanent mute button
+        let button = new Button("audio", ()=>{
+            if (audBg.playing()){
+                audBg.pause();
+            }
+            else{
+                audBg.play();
+            }
+        }, 0);
+        button.position = {x:this.app.screen.width - button.width, y:this.app.screen.height-button.height};
+        this.app.stage.addChild(button);
+
         //Pause functionality
         document.addEventListener("keydown", (e)=>{
             if (e.key == "Escape")
@@ -235,6 +247,7 @@ const gameManager = {
         this.createHUD(mainScene);
         this.createPauseMenu(mainScene);
         this.camera.target = this.player;
+        this.camera.container = mainScene;
         return mainScene;
     },
 
@@ -364,11 +377,6 @@ const gameManager = {
         {
             this.gameWon();      
         }
-    },
-
-    __debugKillNormalEnemies(){
-        for (let i=0; i<this.enemies.length-1; i++)
-            this.enemies[i].decrementHealth(500);
     },
     /**
      * Called when the game was won
@@ -527,13 +535,22 @@ class Fader{
     }
 }
 
-//Wait for custom font to be loaded before making the canvas
-WebFont.load({
-    google: {
-        families: ['Saira']
-    },
-    //Use arrow function so proper this will be used
-    active:e=>{
-        gameManager.windowLoaded();
-    }
+//Load bg audio first
+let audBg = new Howl({
+    src: ["media/audio/bg.wav"],
+    loop: true
+}).once("load", ()=>{
+    audBg.play();
+    //Wait for custom font to be loaded before making the canvas
+    WebFont.load({
+        google: {
+            families: ['Saira']
+        },
+        //Use arrow function so proper this will be used
+        active:e=>{
+            gameManager.windowLoaded();
+        }
+    });
 });
+
+
